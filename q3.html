@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>食品饮料Q3活动规划 · 分类周历</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background:#f5f5f7; color:#1d1d1f; padding:24px; }
+h1 { text-align:center; font-size:22px; margin-bottom:6px; }
+.subtitle { text-align:center; font-size:13px; color:#86868b; margin-bottom:20px; }
+
+/* 图例 */
+.legend { display:flex; gap:14px; justify-content:center; margin-bottom:20px; flex-wrap:wrap; }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:12px; }
+.legend-dot { width:14px; height:14px; border-radius:4px; }
+.legend-sep { color:#ccc; margin:0 4px; }
+
+/* 分类区块 */
+.cat-section { margin-bottom:20px; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+.cat-header { padding:10px 16px; color:#fff; font-size:15px; font-weight:700; display:flex; align-items:center; gap:8px; letter-spacing:0.5px; }
+.cat-header .icon { font-size:18px; }
+
+/* 五大分类色 */
+.sec-kehu { border:2px solid #1565C0; }
+.sec-kehu .cat-header { background:linear-gradient(135deg,#1565C0,#1976D2); }
+.sec-kehu .row-label { color:#1565C0; }
+
+.sec-suyuan { border:2px solid #2E7D32; }
+.sec-suyuan .cat-header { background:linear-gradient(135deg,#2E7D32,#43A047); }
+.sec-suyuan .row-label { color:#2E7D32; }
+
+.sec-shiling { border:2px solid #E65100; }
+.sec-shiling .cat-header { background:linear-gradient(135deg,#E65100,#F57C00); }
+.sec-shiling .row-label { color:#E65100; }
+
+.sec-zhanhui { border:2px solid #6A1B9A; }
+.sec-zhanhui .cat-header { background:linear-gradient(135deg,#6A1B9A,#8E24AA); }
+.sec-zhanhui .row-label { color:#6A1B9A; }
+
+.sec-pinpai { border:2px solid #C62828; }
+.sec-pinpai .cat-header { background:linear-gradient(135deg,#C62828,#E53935); }
+.sec-pinpai .row-label { color:#C62828; }
+
+/* 表格 */
+.table-wrap { overflow-x:auto; }
+.cat-table { width:100%; border-collapse:collapse; background:#fff; }
+.cat-table th, .cat-table td { border:1px solid #e8e8e8; padding:5px 7px; font-size:10.5px; vertical-align:top; min-width:82px; }
+.cat-table th { background:#f8f8fa; font-weight:600; white-space:nowrap; text-align:center; font-size:10px; }
+.cat-table td:first-child { position:sticky; left:0; z-index:2; background:#fff; min-width:110px; padding-left:12px; font-weight:600; font-size:11px; }
+.cat-table th:first-child { position:sticky; left:0; z-index:3; min-width:110px; }
+
+/* 周次表头 */
+.wk-th .wk-num { font-weight:700; font-size:11px; }
+.wk-th .wk-date { font-size:8px; color:#999; }
+
+/* 月份分隔 */
+.m7 { border-left:3px solid #E53935; }
+.m8 { border-left:3px solid #FB8C00; }
+.m9 { border-left:3px solid #43A047; }
+
+/* 月份行 */
+.month-row th { background:#1d1d1f !important; color:#fff; font-size:12px; text-align:center; letter-spacing:3px; font-weight:700; }
+
+/* 行标签 */
+.row-label { display:flex; align-items:center; gap:4px; }
+.row-dot { width:8px; height:8px; border-radius:2px; display:inline-block; }
+
+/* 活动卡片 */
+.act { display:block; font-size:10px; padding:3px 5px; margin:2px 0; border-radius:5px; line-height:1.35; background:#f8f8fa; border-left:3px solid #ccc; }
+.act strong { font-size:10px; font-weight:600; }
+.uncertain { background:#f0f0f0; opacity:0.7; }
+.tag-q { background:#FFEBEE; color:#C62828; font-size:8px; padding:0 3px; border-radius:6px; margin-left:2px; }
+.need-support { color:#E53935; font-size:9px; }
+.need-support::before { content:"📌"; }
+.node-tag { display:inline-block; font-size:8px; padding:1px 4px; border-radius:8px; margin-bottom:1px; color:#fff; font-weight:500; }
+
+/* 行业边色 */
+.tea .act { border-left-color:#43A047; background:#f0faf0; }
+.pkg .act { border-left-color:#FB8C00; background:#fff8f0; }
+.health .act { border-left-color:#8E24AA; background:#faf0ff; }
+.growth .act { border-left-color:#1E88E5; background:#f0f7ff; }
+.merge .act { border-left-color:#F9A825; background:#fffdf0; }
+
+
+/* 关键节点条 */
+.node-bar { margin-bottom:20px; background:#fff; border-radius:10px; padding:12px 16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.node-bar h3 { font-size:13px; margin-bottom:8px; color:#555; }
+.node-items { display:flex; gap:6px; flex-wrap:wrap; }
+.node-pill { font-size:10px; padding:3px 8px; border-radius:12px; color:#fff; font-weight:500; white-space:nowrap; }
+
+/* 待定项 */
+.section-note { margin-top:20px; background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+.section-note h2 { font-size:16px; margin-bottom:10px; }
+.uncertain-list { list-style:none; columns:2; }
+.uncertain-list li { padding:6px 0; border-bottom:1px solid #eee; font-size:12px; break-inside:avoid; }
+.uncertain-list li:last-child { border-bottom:none; }
+
+/* 审计区域 */
+.audit-h3 { font-size:15px; margin:20px 0 10px; padding-left:8px; border-left:4px solid #E53935; }
+.audit-table-wrap { overflow-x:auto; margin-bottom:16px; }
+.audit-table { width:100%; border-collapse:collapse; font-size:12px; }
+.audit-table th { background:#1d1d1f; color:#fff; padding:8px 10px; text-align:left; font-weight:600; white-space:nowrap; }
+.audit-table td { padding:8px 10px; border-bottom:1px solid #eee; vertical-align:top; line-height:1.5; }
+.audit-table tr:hover td { background:#f8f8fa; }
+.highlight-cell { background:#FFF8E1; font-weight:500; }
+.resolved-cell { background:#E8F5E9; color:#2E7D32; font-weight:500; }
+.status-ok { color:#43A047; font-weight:700; }
+.status-warn { color:#FB8C00; font-weight:700; }
+.status-bad { color:#E53935; font-weight:700; }
+.audit-summary { background:#FFF3E0; border-radius:8px; padding:16px; margin-top:12px; }
+.audit-summary p { font-size:13px; line-height:1.7; margin-top:6px; }
+
+/* ============ 统一时间轴大表 ============ */
+.unified-section { margin-bottom:20px; border-radius:12px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,0.1); background:#fff; }
+.unified-table { width:100%; border-collapse:collapse; background:#fff; }
+.unified-table th, .unified-table td { border:1px solid #e8e8e8; padding:5px 7px; font-size:10.5px; vertical-align:top; min-width:90px; }
+.unified-table th.wk-th { background:#f8f8fa; font-weight:600; white-space:nowrap; text-align:center; font-size:10px; padding:4px 4px; }
+.wk-th .wk-num { font-size:11px; font-weight:700; color:#1d1d1f; }
+.wk-th .wk-date { font-size:9px; color:#86868b; margin-top:1px; }
+.wk-th .wk-node { margin-top:4px; display:flex; flex-direction:column; gap:2px; align-items:center; }
+.wk-th .wk-node .np { display:inline-block; font-size:9px; padding:2px 5px; border-radius:10px; color:#fff; font-weight:500; white-space:nowrap; line-height:1.4; }
+.cat-th, .biz-th { background:#1d1d1f !important; color:#fff !important; font-weight:700 !important; text-align:center !important; font-size:11px !important; }
+.cat-th { width:50px; min-width:50px; }
+.biz-th { min-width:108px; }
+.cat-cell { width:50px; min-width:50px; max-width:50px; text-align:center; vertical-align:middle !important; color:#fff; font-weight:700; font-size:13px; line-height:1.5; padding:10px 2px; letter-spacing:1px; }
+.cat-cell .cat-icon { font-size:22px; display:block; margin-bottom:6px; line-height:1; }
+.cat-kehu { background:linear-gradient(135deg,#1565C0,#1976D2); }
+.cat-suyuan { background:linear-gradient(135deg,#2E7D32,#43A047); }
+.cat-shiling { background:linear-gradient(135deg,#E65100,#F57C00); }
+.cat-zhanhui { background:linear-gradient(135deg,#6A1B9A,#8E24AA); }
+.cat-pinpai { background:linear-gradient(135deg,#C62828,#E53935); }
+.biz-cell { background:#fff; min-width:108px; padding-left:10px; font-weight:600; font-size:11px; vertical-align:middle; }
+.biz-cell .row-dot { width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:5px; }
+.row-section-start td { border-top:3px solid #1d1d1f; }
+</style>
+</head>
+<body>
+
+<h1>食品饮料 Q3 活动规划 · 分类周历</h1>
+<p class="subtitle">按活动类型分组 · 各业务线活动一览</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#1565C0"></div>客户会</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>行业溯源</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>时令/节点</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6A1B9A"></div>展会</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#C62828"></div>品牌自有大事件</div>
+  <span class="legend-sep">|</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#43A047"></div>茶酒生鲜</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FB8C00"></div>预包装</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8E24AA"></div>保健健康滋补</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1E88E5"></div>增长组</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#F9A825"></div>中心全行业</div>
+</div>
+
+<!-- ============ Q3 分类周历总表 ============ -->
+<div class="unified-section">
+<div class="table-wrap">
+<table class="unified-table">
+<thead>
+<tr class="week-row">
+<th class="cat-th">分类</th>
+<th class="biz-th">业务线</th>
+<th class="wk-th m7"><div class="wk-num">W26</div><div class="wk-date">6/29-7/5</div></th>
+<th class="wk-th m7"><div class="wk-num">W27</div><div class="wk-date">7/6-7/12</div><div class="wk-node"><span class="np" style="background:#E53935">7/7 小暑</span></div></th>
+<th class="wk-th m7"><div class="wk-num">W28</div><div class="wk-date">7/13-7/19</div><div class="wk-node"><span class="np" style="background:#E53935">7/16 初伏</span></div></th>
+<th class="wk-th m7"><div class="wk-num">W29</div><div class="wk-date">7/20-7/26</div><div class="wk-node"><span class="np" style="background:#E53935">7/22 大暑</span><span class="np" style="background:#E53935">7/26 二伏</span></div></th>
+<th class="wk-th m8"><div class="wk-num">W30</div><div class="wk-date">7/27-8/2</div></th>
+<th class="wk-th m8"><div class="wk-num">W31</div><div class="wk-date">8/3-8/9</div><div class="wk-node"><span class="np" style="background:#FB8C00">8/7 立秋</span></div></th>
+<th class="wk-th m8"><div class="wk-num">W32</div><div class="wk-date">8/10-8/16</div><div class="wk-node"><span class="np" style="background:#FB8C00">8/15 末伏</span></div></th>
+<th class="wk-th m8"><div class="wk-num">W33</div><div class="wk-date">8/17-8/23</div><div class="wk-node"><span class="np" style="background:#E91E63">8/19 七夕</span><span class="np" style="background:#FB8C00">8/23 处暑</span></div></th>
+<th class="wk-th m8"><div class="wk-num">W34</div><div class="wk-date">8/24-8/30</div></th>
+<th class="wk-th m9"><div class="wk-num">W35</div><div class="wk-date">8/31-9/6</div></th>
+<th class="wk-th m9"><div class="wk-num">W36</div><div class="wk-date">9/7-9/13</div><div class="wk-node"><span class="np" style="background:#43A047">9/7 白露</span><span class="np" style="background:#5C6BC0">9/10 教师节</span></div></th>
+<th class="wk-th m9"><div class="wk-num">W37</div><div class="wk-date">9/14-9/20</div></th>
+<th class="wk-th m9"><div class="wk-num">W38</div><div class="wk-date">9/21-9/27</div><div class="wk-node"><span class="np" style="background:#43A047">9/22 秋分</span><span class="np" style="background:#E53935">9/27 中秋</span></div></th>
+<th class="wk-th m9"><div class="wk-num">W39</div><div class="wk-date">9/28-9/30</div></th>
+</tr>
+</thead>
+<tbody>
+<!-- 一、客户会 -->
+<tr class="row-section-start">
+<td rowspan="3" class="cat-cell cat-kehu"><span class="cat-icon">🤝</span>客户会</td>
+<td class="biz-cell"><span class="row-dot" style="background:#43A047"></span>茶酒生鲜</td>
+<td class="tea"></td>
+<td class="tea"><span class="act"><strong>川陕渝生鲜闭门会</strong> 📍成都</span></td>
+<td class="tea"></td>
+<td class="tea"><span class="act"><strong>福建闭门会</strong> 📍厦门</span></td>
+<td class="tea"></td><td class="tea"></td>
+<td class="tea"><span class="act"><strong>江苏闭门会</strong> 📍连云港</span><span class="act"><strong>白酒宿迁产业带拓客会</strong><br>📍宿迁</span></td>
+<td class="tea"></td><td class="tea"><span class="act"><strong>白酒清香产业带拓客会</strong><br>📍山西</span><span class="act"><strong>鹅选品茗节·安溪站</strong><br>📍安溪</span></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#1E88E5"></span>增长组</td>
+<td class="growth"><span class="act"><strong>重庆区域拓客</strong><br>📍重庆｜6/29-7/3</span></td>
+<td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td>
+<td class="growth"><span class="act"><strong>广东区域拓客</strong><br>📍广东｜8月</span></td>
+<td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#F9A825"></span>中心全行业</td>
+<td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td>
+<td class="merge"><span class="act"><strong>🔥 鹅选金秋客户闭门会</strong></span></td>
+<td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td><td class="merge"></td>
+</tr>
+<!-- 二、行业溯源 -->
+<tr class="row-section-start">
+<td rowspan="2" class="cat-cell cat-suyuan"><span class="cat-icon">🌿</span>行业<br>溯源</td>
+<td class="biz-cell"><span class="row-dot" style="background:#43A047"></span>茶酒生鲜</td>
+<td class="tea"><span class="act"><strong>红酒产业带溯源</strong><br>📍宁夏｜6-7月</span></td>
+<td class="tea"></td>
+<td class="tea"></td><td class="tea"></td><td class="tea"></td>
+<td class="tea">
+<span class="act"><strong>福建溯源直播</strong><br>📍东山岛/霞浦<br>东海首捕开海季·20w+</span>
+<span class="act"><strong>宁夏产区溯源</strong><br>📍宁夏｜8月</span>
+</td>
+<td class="tea"></td><td class="tea"></td><td class="tea"><span class="act"><strong>鹅选品茗节·安溪站</strong><br>📍安溪</span></td>
+<td class="tea"><span class="act"><strong>酒厂溯源达播</strong><br>8-9月按需推进</span></td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"><span class="act"><strong>江苏溯源直播</strong><br>📍苏州/南京<br>大闸蟹开湖季·20w+</span></td>
+<td class="tea"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#1E88E5"></span>增长组</td>
+<td class="growth"><span class="act"><strong>寻味中国·重庆站溯源</strong><br>📍重庆｜6/29-7/5</span></td>
+<td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td><td class="growth"></td>
+<td class="growth"><span class="act"><strong>寻味中国·山东站溯源</strong><br>📍山东｜9月</span></td>
+<td class="growth"></td><td class="growth"></td>
+</tr>
+<!-- 三、时令/节点 -->
+<tr class="row-section-start">
+<td rowspan="4" class="cat-cell cat-shiling"><span class="cat-icon">🗓️</span>时令<br>节点</td>
+<td class="biz-cell"><span class="row-dot" style="background:#43A047"></span>茶酒生鲜</td>
+<td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#FB8C00"></span>预包装</td>
+<td class="pkg"></td>
+<td class="pkg"></td>
+<td class="pkg"></td>
+<td class="pkg"></td>
+<td class="pkg" colspan="2" style="background:linear-gradient(90deg,#FFE0B2,#FFB74D) top/100% 50% no-repeat;vertical-align:top;">
+<span class="act"><span class="node-tag" style="background:#FB8C00">⭐⭐⭐⭐⭐</span><br>🍂 立秋<br>秋梨膏/润肺/即食粥</span>
+</td>
+<td class="pkg" style="background:linear-gradient(90deg,#FFF3E0,#FFE0B2);">
+<span class="act"><span class="node-tag" style="background:#FB8C00">⭐⭐⭐⭐</span><br>💝 七夕送礼</span>
+</td>
+<td class="pkg" colspan="2" style="background:linear-gradient(90deg,#E3F2FD,#BBDEFB) bottom/100% 50% no-repeat;vertical-align:bottom;">
+<span class="act"><span class="node-tag" style="background:#1E88E5">⭐⭐⭐⭐</span><br>📚 开学季<br>零食/速食/乳品</span>
+</td>
+<td class="pkg" style="background:linear-gradient(180deg,#FFF8E1,#FFECB3 50%,#E1BEE7 50%,#CE93D8);vertical-align:top;">
+<span class="act"><span class="node-tag" style="background:#FB8C00">⭐⭐⭐⭐⭐</span><br>白露<br>秋梨/润燥</span>
+</td>
+<td class="pkg" style="background:linear-gradient(180deg,transparent,transparent 50%,#E1BEE7 50%,#CE93D8);vertical-align:bottom;">
+<span class="act"><span class="node-tag" style="background:#7B1FA2">📖</span><br>教师节<br>9/10</span>
+</td>
+<td class="pkg"></td>
+<td class="pkg"></td>
+<td class="pkg"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#8E24AA"></span>保健健康滋补</td>
+<td class="health"></td>
+<td class="health"></td>
+<td class="health"></td>
+<td class="health"></td>
+<td class="health"></td>
+<td class="health"></td>
+<td class="health"></td>
+<td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#F9A825"></span>中心全行业</td>
+<td class="merge"></td>
+<td class="merge" colspan="5" style="background:linear-gradient(90deg,#E1F5FE,#B3E5FC,#81D4FA,#4FC3F7,#29B6F6);padding:8px 10px;"><div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#01579B;">🌊 W27-W31 避暑/祛湿适配（按品类）</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px 10px;font-size:10px;line-height:1.45;color:#0D47A1;"><div><strong>茶叶：</strong>冷泡茶</div><div><strong>饮料&冲调：</strong>消暑饮品/冲调品</div><div><strong>休闲食品：</strong>薄荷糖/果干/祛湿糕点</div><div><strong>粮油调味速食：</strong>轻食/复合调味品</div><div><strong>保健&膳食：</strong>体重管理/血压&血管健康</div><div><strong>传统滋补：</strong>祛湿方向</div></div></td>
+<td class="merge"></td>
+<td class="merge"></td>
+<td class="merge"></td>
+<td class="merge"></td>
+<td class="merge" colspan="3" style="background:linear-gradient(90deg,#FFEBEE,#FFCDD2,#EF9A9A);padding:6px 8px;"><span class="act"><strong>🔥🔥 中秋礼遇季</strong><br>W36-W38｜全品类核心战役</span></td>
+<td class="merge"></td>
+</tr>
+<!-- 四、展会 -->
+<tr class="row-section-start">
+<td rowspan="2" class="cat-cell cat-zhanhui"><span class="cat-icon">🏢</span>展会</td>
+<td class="biz-cell"><span class="row-dot" style="background:#43A047"></span>茶酒生鲜</td>
+<td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td>
+<td class="tea"><span class="act"><strong>专业展会展播</strong><br>📍成都｜9月</span></td>
+<td class="tea"></td><td class="tea"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#8E24AA"></span>保健健康滋补</td>
+<td class="health"></td><td class="health"></td><td class="health"></td>
+<td class="health"><span class="act uncertain"><strong>展播①</strong><span class="tag-q">暂定</span></span></td>
+<td class="health"></td>
+<td class="health"><span class="act uncertain"><strong>展播②</strong><span class="tag-q">暂定</span></span></td>
+<td class="health"></td>
+<td class="health"><span class="act uncertain"><strong>展播③</strong><span class="tag-q">暂定</span></span></td>
+<td class="health"></td><td class="health"></td><td class="health"></td>
+<td class="health"><span class="act uncertain"><strong>展播④</strong><span class="tag-q">暂定</span></span></td>
+<td class="health"></td><td class="health"></td>
+</tr>
+<!-- 五、品牌自有大事件 -->
+<tr class="row-section-start">
+<td rowspan="3" class="cat-cell cat-pinpai"><span class="cat-icon">⭐</span>品牌自有<br>大事件</td>
+<td class="biz-cell"><span class="row-dot" style="background:#43A047"></span>茶酒生鲜</td>
+<td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td>
+<td class="tea"></td>
+<td class="tea"></td><td class="tea"></td>
+<td class="tea"><span class="act"><strong>八马品牌好友日</strong><span class="tag-q">争取中</span></span></td>
+<td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td><td class="tea"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#FB8C00"></span>预包装</td>
+<td class="pkg"></td>
+<td class="pkg"><span class="act"><strong>五谷磨房品牌好友日</strong></span></td>
+<td class="pkg"></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"><span class="act"><strong>锋味派品牌好友日</strong></span></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"></td><td class="pkg"></td>
+</tr>
+<tr>
+<td class="biz-cell"><span class="row-dot" style="background:#8E24AA"></span>保健健康滋补</td>
+<td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td>
+<td class="health"><span class="act"><strong>膳食·万益蓝IP</strong><br>一饭封神×万益蓝<br>大厨视频+投流复用</span></td>
+<td class="health"></td><td class="health"></td><td class="health"></td>
+<td class="health"><span class="act"><strong>膳食·华大好友日</strong><br>待确认艺人/大IP</span></td>
+<td class="health"></td><td class="health"></td><td class="health"></td><td class="health"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 待定项 -->
+<div class="section-note">
+  <h2>❓ 仍需确认细节的项目</h2>
+  <ul class="uncertain-list">
+    <li><strong>膳食·华大好友日</strong> — W35（9月第一周），待确认艺人/大IP资源</li>
+    <li><strong>保健·展播4场</strong> — 已暂定W29①/W31②/W33③/W37④，具体日期待确认</li>
+    <li><strong>酒水·酒厂溯源达播</strong> — W35（8月底-9月初），具体场次待定</li>
+    <li><strong>生鲜·8月溯源季</strong> — W31前后（含福建东山岛/霞浦开海季+宁夏产区），整体节奏与产区档期待统筹</li>
+  </ul>
+</div>
+
+<!-- ============ 洞察比对分析 ============ -->
+<div class="section-note" style="margin-top:24px;">
+  <h2>🔍 品类趋势洞察 × 活动规划 交叉审计</h2>
+  <p class="subtitle" style="text-align:left;margin-bottom:16px;">数据来源：商品+内容Q3品类趋势洞察 | 审计时间：2026年6月</p>
+
+  <h3 class="audit-h3">一、❌ 相悖的安排（数据不支持当前节奏）</h3>
+  <div class="audit-table-wrap">
+    <table class="audit-table">
+      <thead>
+        <tr><th style="width:30px">#</th><th style="width:120px">相悖点</th><th>洞察数据</th><th>当前安排</th><th>问题</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>酒水9月密度不足</strong></td>
+          <td>白酒占酒类75%GMV，9月单月贡献87%品类销售额，中秋送礼是唯一驱动</td>
+          <td>7-8月排了5场活动，9月仅1场展会展播(W37)</td>
+          <td class="resolved-cell">✅ 已解决：新增中秋节活动W36-W38(9/8-9/25)，9月酒水密度已补足</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>滋补重心错配</strong></td>
+          <td>传统滋补9月贡献46%GMV，白露后润燥润肺4257w+药食同源进补1.45亿</td>
+          <td>滋补冲刺放在W32(8月中末伏)，9月几乎空白</td>
+          <td class="highlight-cell">末伏祛湿只是"尾量"1278w，9月白露进补才是大生意</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>茶叶9月爆发期无活动</strong></td>
+          <td>茗茶9月贡献58%品类GMV，白露茶礼546w+红茶送礼场景</td>
+          <td>茶叶活动在W27冷泡茶(7月)、W34安溪站(8月)，9月完全空白</td>
+          <td class="highlight-cell">冷泡茶7-8月OK，但9月白露茶季/中秋茶礼没覆盖</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>生鲜9月缺煲汤进补线</strong></td>
+          <td>生鲜9月切换到老鸭2085w/乳鸽584w/莲藕煲汤进补场景1024w</td>
+          <td>9月只有大闸蟹开湖季(W38)</td>
+          <td class="highlight-cell">大闸蟹OK但单薄，煲汤进补食材无对应拓客活动</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="audit-h3">二、🏷️ 洞察五大主题套用检查</h3>
+  <div class="audit-table-wrap">
+    <table class="audit-table">
+      <thead>
+        <tr><th>主题</th><th style="width:60px">套用状态</th><th>当前覆盖</th><th>缺口</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. 消夏暑</strong></td>
+          <td><span class="status-ok">✅ 基本套上</span></td>
+          <td>预包装W27时令、滋补初伏W27、跨行业三伏联合启动</td>
+          <td class="highlight-cell">饮料冲调消暑线(白桦树汁712w/刺梨原汁459w)无活动</td>
+        </tr>
+        <tr>
+          <td><strong>2. 尝时鲜</strong></td>
+          <td><span class="status-ok">✅ 基本套上</span></td>
+          <td>生鲜溯源(东海开海季/大闸蟹)</td>
+          <td class="highlight-cell">水果金品(金枕榴莲占水果22%/鹰嘴桃2636w)无专项溯源</td>
+        </tr>
+        <tr>
+          <td><strong>3. 送团圆</strong></td>
+          <td><span class="status-ok">✅ 基本套上</span></td>
+          <td>W36-W38酒水中秋节+W36-W38中秋礼遇季跨行业合并</td>
+          <td class="highlight-cell">茶叶白露茶礼仍未覆盖</td>
+        </tr>
+        <tr>
+          <td><strong>4. 补秋膘</strong></td>
+          <td><span class="status-bad">❌ 严重不足</span></td>
+          <td>滋补末伏冲刺(W32)勉强算</td>
+          <td class="highlight-cell">滋补9月白露进补爆发无活动；生鲜煲汤进补线空白</td>
+        </tr>
+        <tr>
+          <td><strong>5. 守自律</strong></td>
+          <td><span class="status-bad">❌ 几乎空白</span></td>
+          <td>保健品清凉减肥季Q3持续(勉强算)</td>
+          <td class="highlight-cell">饮料冲调代餐减脂7440w无活动；粮油健康油升级5031w无活动；保健代餐品线(左旋肉碱/白芸豆)无专项</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="audit-h3">三、📈 5大趋势套用检查</h3>
+  <div class="audit-table-wrap">
+    <table class="audit-table">
+      <thead>
+        <tr><th>趋势</th><th style="width:60px">套用状态</th><th>建议</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>三伏祛湿是被忽视的夏季养生IP</strong>（4246w）</td>
+          <td><span class="status-warn">⚠️</span></td>
+          <td>祛湿主题应跨品类联动：滋补+饮料冲调(荷叶茶)+粮油(薏米/红豆)统一打"三伏祛湿"</td>
+        </tr>
+        <tr>
+          <td><strong>粮油健康油升级是Q3最大结构性变化</strong>（紫苏籽油3188w+亚麻籽油1843w）</td>
+          <td><span class="status-bad">❌</span></td>
+          <td>需要在粮油调味赛道补一场"健康油升级"专项拓客或展播</td>
+        </tr>
+        <tr>
+          <td><strong>月饼口味分化</strong>（五仁>蛋黄莲蓉>榴莲冰皮>流心奶黄>鲜肉）</td>
+          <td><span class="status-bad">❌</span></td>
+          <td>中秋活动需按口味分线运营：五仁走非遗溢价、榴莲冰皮走年轻爆款、鲜肉走地域限定</td>
+        </tr>
+        <tr>
+          <td><strong>代餐新爆品羽衣甘蓝粉</strong>（2142w超传统麦片）</td>
+          <td><span class="status-bad">❌</span></td>
+          <td>饮料冲调赛道需补"代餐减脂"专项活动，羽衣甘蓝粉可作为核心爆品</td>
+        </tr>
+        <tr>
+          <td><strong>白露切换信号</strong>（8月底润燥润肺先起，9月进补爆发）</td>
+          <td><span class="status-bad">❌</span></td>
+          <td>需在W35-W36增加"白露进补"跨品类联动，覆盖滋补+茶叶+生鲜煲汤线</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="audit-h3">四、📋 完全没覆盖的品类/品线（空白区）</h3>
+  <div class="audit-table-wrap">
+    <table class="audit-table">
+      <thead>
+        <tr><th>空白区</th><th>洞察数据</th><th>建议补位</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>饮料冲调·代餐减脂线</strong></td>
+          <td>7440w(31%)，羽衣甘蓝粉2142w</td>
+          <td class="highlight-cell">补专项活动，可归入"守自律"主题</td>
+        </tr>
+        <tr>
+          <td><strong>粮油调味·健康油升级</strong></td>
+          <td>紫苏籽油3188w+亚麻籽油1843w</td>
+          <td class="highlight-cell">补拓客/展播，可结合健康自律主题</td>
+        </tr>
+        <tr>
+          <td><strong>传统滋补·9月白露进补</strong></td>
+          <td>9月占46%GMV，润燥润肺4257w</td>
+          <td class="highlight-cell">W35-W36补滋补进补活动</td>
+        </tr>
+        <tr>
+          <td><strong>茗茶·白露茶季</strong></td>
+          <td>9月占58%GMV，茶礼546w</td>
+          <td class="highlight-cell">W35-W36补白露茶季活动</td>
+        </tr>
+        <tr>
+          <td><strong>生鲜·煲汤进补食材</strong></td>
+          <td>老鸭2085w/乳鸽584w</td>
+          <td class="highlight-cell">W36补煲汤食材拓客</td>
+        </tr>
+        <tr>
+          <td><strong>酒水·9月白酒主战场</strong></td>
+          <td>9月占87%品类销售额</td>
+          <td class="resolved-cell">✅ 已补：W36-W38中秋节活动(9/8-9/25)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="audit-summary">
+    <h3 class="audit-h3">📌 总结</h3>
+    <p>当前规划最大的结构性问题是<strong>7-8月偏重、9月偏轻</strong>——而洞察数据显示9月才是滋补、茶叶、酒水、煲汤进补的真正爆发期。<span style="color:#43A047;">酒水9月密度已通过中秋节活动(W36-W38)补足。</span></p>
+    <p>另外<strong>"守自律"</strong>（代餐减脂/健康油升级）这条通用线完全没有活动覆盖，建议补上。</p>
+  </div>
+</div>
+
+</body>
+</html>
