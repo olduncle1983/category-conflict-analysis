@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>食品饮料中心-竞价提收策略全景图</title>
+<style>
+  :root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-soft: #eff6ff;
+    --accent: #f97316;
+    --accent-soft: #fff7ed;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #f8fafc;
+    --card: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    padding: 32px 24px;
+    min-height: 100vh;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* 标题 */
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    padding: 16px 24px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+    border-radius: 10px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 14px rgba(59,130,246,0.25);
+  }
+
+  /* 主公式横幅：客户收入 = 概率 × eCPM（竞争力） */
+  .master-formula {
+    grid-column: 1 / 6;
+    margin-top: 20px;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px 24px;
+    background: linear-gradient(90deg, #fff7ed 0%, #f8fafc 50%, #eff6ff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.04);
+  }
+  .mf-label {
+    align-self: center;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .mf-eq, .mf-times {
+    align-self: center;
+    font-size: 26px;
+    font-weight: 300;
+    color: #94a3b8;
+  }
+  .mf-term {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .mf-term:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(15,23,42,0.08);
+    filter: brightness(1.02);
+  }
+  .mf-term-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .mf-term-name em {
+    font-style: normal;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 4px;
+    opacity: 0.75;
+  }
+  .mf-term-sub {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.75;
+  }
+  .mf-prob {
+    background: #fed7aa;
+    color: #9a3412;
+    border: 1px solid #fdba74;
+  }
+  .mf-ecpm {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+  }
+
+  /* 公式主体 */
+  .formula {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 0.7fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .multiply {
+    font-size: 36px;
+    font-weight: 300;
+    color: #94a3b8;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    align-self: end;
+    height: 102px;   /* 与 .block 高度一致，使 × 与 CTR/CVR/BID 色块垂直居中对齐 */
+  }
+
+  /* 上方"角色动作"卡片组 */
+  .roles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    margin-bottom: 16px;
+  }
+  /* 透明占位：用于让 CTR 列与 CVR 列的「行业动作」顶部对齐 */
+  .align-spacer {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .role-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    transition: all 0.2s ease;
+  }
+  .role-card .role-head {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .role-card.sales .role-head { background: var(--primary); }
+  .role-card.ops   .role-head { background: var(--accent); }
+  .role-card .role-body {
+    padding: 12px 14px 14px;
+  }
+  .role-card.clickable { cursor: pointer; }
+  .role-card.clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+    border-color: var(--primary);
+  }
+  .role-hint {
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+
+  /* 增长动作 → 行业动作 输送箭头 */
+  .feed-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin: -4px 0 -4px;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .feed-arrow .line {
+    width: 2px;
+    height: 14px;
+    background: var(--primary);
+  }
+  .feed-arrow .tip {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--primary);
+    margin-top: -1px;
+  }
+  .feed-arrow .label {
+    margin-top: 2px;
+    padding: 2px 8px;
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    border-radius: 4px;
+  }
+
+  .lane + .lane { margin-top: 10px; }
+  .lane-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    border-radius: 4px;
+  }
+  .role-card.ops .lane-name {
+    background: var(--accent-soft);
+    color: #c2410c;
+  }
+  .lane-items {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-left: 10px;
+  }
+  /* lane 内嵌的背景说明：小字 + 浅色卡片 */
+  .lane-note {
+    margin-top: 8px;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .lane-note-bg, .lane-note-act {
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--text-muted);
+    padding: 6px 8px;
+    border-radius: 4px;
+    background: #f8fafc;
+    border-left: 2px solid #cbd5e1;
+  }
+  .lane-note-bg b { color: #64748b; font-weight: 700; }
+  .lane-note-act {
+    background: #fff7ed;
+    border-left-color: var(--accent);
+    color: #7c2d12;
+  }
+  .lane-note-act b { color: #c2410c; font-weight: 700; }
+  .lane-items div {
+    position: relative;
+    padding: 2px 0 2px 10px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
+  .lane-items div::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+  }
+  .role-card.ops .lane-items div::before {
+    background: var(--accent);
+  }
+  /* 流程箭头：1 推出 2 —— 把红点替换为下箭头 */
+  .lane-items div.with-arrow {
+    margin-top: 6px;
+    padding-left: 16px;
+  }
+  .lane-items div.with-arrow::before {
+    content: "↓";
+    background: transparent;
+    width: auto;
+    height: auto;
+    color: #c2410c;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    top: 4px;
+    left: 0;
+    border-radius: 0;
+  }
+
+  /* 共同目标箭头 */
+  .merge-arrow {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin: 0 0 10px;
+    user-select: none;
+    position: relative;
+  }
+  .merge-arrow::before,
+  .merge-arrow::after {
+    content: "";
+    display: inline-block;
+    width: 28%;
+    height: 1px;
+    background: var(--border);
+    vertical-align: middle;
+    margin: 0 10px;
+  }
+
+  /* 底部指标色块 */
+  .block {
+    padding: 40px 20px;
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    box-shadow: 0 6px 16px rgba(59,130,246,0.25);
+    margin-top: auto;
+  }
+  .block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(59,130,246,0.35);
+  }
+  .block .name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* 对齐：只放 block 的列（没有上方双栏），底部对齐 */
+  .col.only-block { justify-content: flex-end; }
+
+  /* BID 列：经营力卡从顶部开始（与 CTR/CVR 的「行业动作」对齐），merge-arrow 推到底使色块对齐 */
+  .col.bid-col .roles { flex: 0 0 auto; margin-bottom: 16px; }
+  .col.bid-col .merge-arrow { margin-top: auto; }
+  .col.bid-col .role-card { max-width: 100%; }
+
+  /* 公式右侧的竖向分隔线 */
+  .divider-vert {
+    width: 1px;
+    align-self: stretch;
+    background: var(--line);
+    margin: 0 4px;
+  }
+
+  /* 小店版如翼 列：贯穿整个公式区高度的长竖栏 */
+  .col.ruyi-col {
+    justify-content: stretch;
+    min-width: 140px;
+    padding: 0;
+  }
+  .ruyi-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px 16px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #eef4ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe;
+    color: var(--primary-dark);
+    box-shadow: 0 2px 6px rgba(59,130,246,0.12);
+  }
+  .ruyi-block .ruyi-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    line-height: 1.6;
+  }
+  .ruyi-block .ruyi-divider {
+    width: 24px;
+    height: 1px;
+    background: #93c5fd;
+  }
+  .ruyi-block .ruyi-desc {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e40af;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 1px;
+    line-height: 1.7;
+  }
+
+  /* 食品饮料客户勤奋度检查 横跨色块 */
+  .diligence-bar {
+    grid-column: 1 / 6;
+    margin-top: 16px;
+    padding: 14px 22px;
+    border-radius: 12px;
+    background: #fed7aa;
+    border: 1px solid #fdba74;
+    color: #9a3412;
+    box-shadow: 0 2px 6px rgba(249, 115, 22, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .diligence-bar .diligence-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  /* 检查下方两个并排色块 */
+  .diligence-actions {
+    grid-column: 1 / 6;
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .diligence-chip {
+    padding: 14px 22px;
+    border-radius: 12px;
+    background: #fed7aa;
+    border: 1px solid #fdba74;
+    color: #9a3412;
+    box-shadow: 0 2px 6px rgba(249, 115, 22, 0.15);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .diligence-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* 拼概率：色块内嵌详细说明 */
+  .diligence-chip.pin-chip {
+    text-align: left;
+    padding: 18px 20px;
+    line-height: 1.7;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .diligence-chip.pin-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
+  }
+  .pin-chip .pin-head {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #fdba74;
+    position: relative;
+  }
+  .pin-chip .pin-more {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-60%);
+    font-size: 12px;
+    font-weight: 600;
+    color: #c2410c;
+    letter-spacing: 0;
+  }
+  .pin-chip .pin-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #7c2d12;
+    margin-bottom: 8px;
+  }
+  .pin-chip .pin-desc {
+    font-size: 13px;
+    font-weight: 500;
+    color: #9a3412;
+    margin-bottom: 6px;
+  }
+  .pin-chip .pin-desc b {
+    color: #7c2d12;
+    font-weight: 700;
+  }
+  .pin-chip .pin-highlight {
+    font-size: 13px;
+    font-weight: 700;
+    color: #c2410c;
+    margin-bottom: 12px;
+  }
+  .pin-chip .pin-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9a3412;
+    margin-bottom: 8px;
+  }
+  .pin-chip .pin-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pin-chip .pin-tags span {
+    padding: 5px 12px;
+    border: 1px solid #fb923c;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #9a3412;
+    background: #ffffff;
+  }
+
+  /* 卷工具：复用 pin-chip 的排版，单独的核心命题块 */
+  .diligence-chip.tool-chip {
+    text-align: left;
+    padding: 18px 20px;
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .tool-chip .pin-head {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #fdba74;
+  }
+  .tool-chip .pin-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #7c2d12;
+    margin-bottom: 8px;
+  }
+  .tool-chip .pin-desc {
+    font-size: 13px;
+    font-weight: 500;
+    color: #9a3412;
+    margin-bottom: 6px;
+  }
+  .tool-chip .pin-desc b {
+    color: #7c2d12;
+    font-weight: 700;
+  }
+  .tool-chip .pin-highlight {
+    font-size: 13px;
+    font-weight: 700;
+    color: #c2410c;
+    margin-bottom: 12px;
+  }
+  .tool-chip .pin-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9a3412;
+    margin-bottom: 8px;
+  }
+  .tool-chip .pin-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .tool-chip .pin-tags span {
+    padding: 5px 12px;
+    border: 1px solid #fb923c;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #9a3412;
+    background: #ffffff;
+  }
+  .tool-core {
+    margin-top: 4px;
+    padding: 12px 14px;
+    border: 1px solid #fdba74;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.5);
+  }
+  .tool-core-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #7c2d12;
+    margin-bottom: 6px;
+  }
+  .tool-core-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #7c2d12;
+    margin-bottom: 4px;
+  }
+  .tool-core-desc {
+    font-size: 12px;
+    color: #9a3412;
+  }
+
+  .info {
+    margin-top: 24px;
+    padding: 12px 18px;
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    font-size: 12px;
+    color: #78350f;
+    border-radius: 6px;
+  }
+
+  /* 浮层 */
+  .modal-mask {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+    backdrop-filter: blur(2px);
+  }
+  .modal-mask.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(15,23,42,0.3);
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-header {
+    padding: 16px 22px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+    color: white;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-title { font-size: 15px; font-weight: 600; }
+  .modal-close {
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    background: none;
+    border: none;
+    color: white;
+    opacity: 0.85;
+  }
+  .modal-close:hover { opacity: 1; }
+  .modal-body { padding: 18px 22px 22px; }
+
+  /* 深色版浮层（拼概率 - L1 基建对照表） */
+  .modal.modal-dark {
+    background: #0b1220;
+    color: #e2e8f0;
+    max-width: 1080px;
+  }
+  .modal.modal-dark .modal-header {
+    background: linear-gradient(90deg, #1e293b, #0f172a);
+    color: #e2e8f0;
+  }
+  .pin-modal-body { padding: 22px 28px 28px; }
+  .pin-modal-top { margin-bottom: 18px; }
+  .pin-modal-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid #334155;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 14px;
+  }
+  .pin-modal-h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #f1f5f9;
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  .pin-modal-h1 .accent {
+    background: linear-gradient(90deg, #fb923c, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .pin-modal-lead {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.7;
+  }
+  .pin-modal-lead b { color: #f1f5f9; font-weight: 700; }
+
+  .pin-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 16px;
+  }
+
+  .pin-table-wrap {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 18px 18px 0;
+  }
+  .pin-table-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .pin-table-head .t {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f1f5f9;
+  }
+  .pin-table-head .s {
+    font-size: 12px;
+    color: #64748b;
+  }
+  .pin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .pin-table th, .pin-table td {
+    padding: 12px 8px;
+    text-align: right;
+    border-bottom: 1px solid #1e293b;
+  }
+  .pin-table th:first-child, .pin-table td:first-child {
+    text-align: left;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .pin-table thead th {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .pin-table thead th .sub {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .pin-table .col-tail   { color: #fbbf24; font-weight: 700; }
+  .pin-table .col-mid    { color: #34d399; font-weight: 700; }
+  .pin-table .col-head   { color: #60a5fa; font-weight: 700; }
+  .pin-table .col-jump   { color: #94a3b8; }
+  .pin-table tbody tr:last-child td { border-bottom: none; }
+
+  .pin-warn {
+    margin: 14px 0 6px;
+    padding: 14px 16px;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #fde68a;
+  }
+  .pin-warn b { color: #fbbf24; }
+  .pin-warn .em { color: #fb923c; font-weight: 700; }
+
+  .pin-side { display: flex; flex-direction: column; gap: 12px; }
+  .pin-side-card {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .pin-side-card .label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+  .pin-side-card .big {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .pin-side-card .big.orange { color: #fb923c; }
+  .pin-side-card .big.pink   { color: #f472b6; }
+  .pin-side-card .big.red    { color: #ef4444; }
+  .pin-side-card .desc {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+  .progress-lane + .progress-lane { margin-top: 14px; }
+  .progress-lane-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    padding-left: 10px;
+    border-left: 3px solid var(--primary);
+  }
+  .progress-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  .progress-item:last-child { margin-bottom: 0; }
+  .progress-metric {
+    margin-top: 4px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.2px;
+  }
+  .progress-metric b {
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .status.todo    { background: #f1f5f9; color: #64748b; }
+  .status.doing   { background: #fef3c7; color: #b45309; }
+  .status.done    { background: #dcfce7; color: #15803d; }
+
+  @media (max-width: 900px) {
+    .formula {
+      grid-template-columns: 1fr;
+    }
+    .multiply { justify-content: center; padding: 4px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title">食品饮料中心 · 竞价提收策略全景图</div>
+
+  <div class="formula" id="sec-ecpm">
+
+    <!-- CTR 列 -->
+    <div class="col">
+      <div class="roles">
+        <!-- 透明占位：与 CVR 列「商品力·增长动作 + 喂量箭头」等高，使两列「行业动作」顶部对齐 -->
+        <div class="role-card sales align-spacer" aria-hidden="true">
+          <div class="role-head"><span>占位</span></div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">新客</div>
+              <div class="lane-items">
+                <div>以全域通 / ADQ 引入闭环新客</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-arrow align-spacer" aria-hidden="true">
+          <div class="line"></div>
+          <div class="tip"></div>
+        </div>
+
+        <div class="role-card sales clickable" id="ctr-sales-card">
+          <div class="role-head">
+            <span>内容力 · 行业动作</span>
+            <span class="role-hint">查看进展 →</span>
+          </div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">低客单赛道</div>
+              <div class="lane-items">
+                <div>KOC 加热 / 离线硬广收入</div>
+                <div>MCN 机构素材采买（预包装 + 膳食）</div>
+                <div>提升客户展播 / 大场次数</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">产业带赛道</div>
+              <div class="lane-items">
+                <div>达人 × 场次 × 品牌 矩阵扩充</div>
+                <div>（生鲜 / 茶叶 / 传统滋补）</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">高客单赛道</div>
+              <div class="lane-items">
+                <div>达人种草 / 加热 / 切片 一体化</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">保健滋补赛道</div>
+              <div class="lane-items">
+                <div>建立食品饮料知识卡，助力素材放宽描述</div>
+              </div>
+              <div class="lane-note">
+                <div class="lane-note-bg"><b>背景：</b>当前滋补开户没有做一品一户限制，审核侧没有商品库机制可精准识别 SKU 和成分，进而判断素材可支持演绎范围，审核效率低。</div>
+                <div class="lane-note-act"><b>行业侧诉求：</b>推进滋补开户一品一户制，完善投放商品结构化识别建设；同时建立对应医典知识卡，明确"品 - 成分 - 可支持表述范围"的审核规范。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-card ops">
+          <div class="role-head"><span>内容力 · 运营专项</span></div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">低客单赛道</div>
+              <div class="lane-items">
+                <div>推动微广出扶持金，测试 KOC 素材离线投放</div>
+                <div>协助微广推动小店开发用于广告的分佣链接</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">通用需求</div>
+              <div class="lane-items">
+                <div>优质供给外显表达（明星同款 / IP 联名 / 原产地标识 / 中华老字号）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="merge-arrow">共同目标</div>
+      <a href="#" class="block" data-key="ctr">
+        <div class="name">点击率 CTR</div>
+      </a>
+    </div>
+
+    <div class="multiply">×</div>
+
+    <!-- CVR 列 -->
+    <div class="col">
+      <div class="roles">
+        <div class="role-card sales">
+          <div class="role-head"><span>商品力 · 增长动作</span></div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">新客</div>
+              <div class="lane-items">
+                <div>以全域通 / ADQ 引入闭环新客</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-arrow">
+          <div class="line"></div>
+          <div class="tip"></div>
+        </div>
+
+        <div class="role-card sales clickable" id="cvr-sales-card">
+          <div class="role-head">
+            <span>商品力 · 行业动作</span>
+            <span class="role-hint">查看进展 →</span>
+          </div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">预包装赛道</div>
+              <div class="lane-items">
+                <div>明星代言 / IP 联名 / 中华老字号商品 引入与资质展现</div>
+                <div>普通商品本地化适配</div>
+                <div>品牌矩阵直播间裂变</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">产业带赛道</div>
+              <div class="lane-items">
+                <div>原产地标识商品 引入与展现</div>
+                <div>时令生鲜图谱商品</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">高价茶 + 酒水赛道</div>
+              <div class="lane-items">
+                <div>名山 / 名庄 / 名品 及期锚定品引入</div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-name">保健滋补赛道</div>
+              <div class="lane-items">
+                <div>基于人群 × 痛点 引入商品</div>
+                <div>品牌矩阵直播间裂变</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-card ops">
+          <div class="role-head"><span>商品力 · 运营专项</span></div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">通用需求</div>
+              <div class="lane-items">
+                <div>推动商推对应季品 / 原产地 / 老字号 / 明星品 / IP 品等优质商品进行扶持</div>
+                <div>通过落地页 / 直播间 / 达人溯源提及产业带 / 老字号，测试 CVR 的变化</div>
+                <div>推动微信小店把特殊商品标识做得更明显</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="merge-arrow">共同目标</div>
+      <a href="#" class="block" data-key="cvr">
+        <div class="name">转化率 CVR</div>
+      </a>
+    </div>
+
+    <div class="multiply">×</div>
+
+    <!-- BID 列 -->
+    <div class="col bid-col">
+      <div class="roles">
+        <!-- 透明占位：与 CTR/CVR 列「增长动作 + 喂量箭头」等高，使经营力卡顶部与「行业动作」对齐 -->
+        <div class="role-card sales align-spacer" aria-hidden="true">
+          <div class="role-head"><span>占位</span></div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-name">新客</div>
+              <div class="lane-items">
+                <div>以全域通 / ADQ 引入闭环新客</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-arrow align-spacer" aria-hidden="true">
+          <div class="line"></div>
+          <div class="tip"></div>
+        </div>
+
+        <div class="role-card sales">
+          <div class="role-head"><span>经营力 · 公私域联动经营</span></div>
+          <div class="role-body">
+            <div class="lane">
+              <div class="lane-items">
+                <div>融合加粉链路覆盖</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="merge-arrow">共同目标</div>
+      <a href="#" class="block" data-key="bid">
+        <div class="name">出价 BID</div>
+      </a>
+    </div>
+
+    <div class="divider-vert"></div>
+
+    <!-- 小店版如翼 列（贯穿全高竖栏） -->
+    <div class="col ruyi-col">
+      <div class="ruyi-block">
+        <div class="ruyi-title">小店版如翼</div>
+        <div class="ruyi-divider"></div>
+        <div class="ruyi-desc">客户引入与测试</div>
+      </div>
+    </div>
+
+    <!-- 主公式横幅：客户收入 = 概率 × eCPM（竞争力） -->
+    <div class="master-formula">
+      <span class="mf-label">客户收入</span>
+      <span class="mf-eq">=</span>
+      <a href="#sec-prob" class="mf-term mf-prob">
+        <span class="mf-term-name">概率</span>
+        <span class="mf-term-sub">勤奋度博取</span>
+      </a>
+      <span class="mf-times">×</span>
+      <a href="#sec-ecpm" class="mf-term mf-ecpm">
+        <span class="mf-term-name">eCPM <em>竞争力</em></span>
+        <span class="mf-term-sub">点击率 CTR × 转化率 CVR × 出价 BID</span>
+      </a>
+    </div>
+
+    <!-- 食品饮料客户勤奋度检查 横跨色块（覆盖 CTR/CVR/BID 下方） -->
+    <div class="diligence-bar" id="sec-prob">
+      <div class="diligence-title">食品饮料客户勤奋度</div>
+    </div>
+
+    <!-- 检查下方两个并排色块 -->
+    <div class="diligence-actions">
+      <div class="diligence-col">
+        <div class="diligence-chip pin-chip" id="pin-chip">
+          <div class="pin-head">卷基建搏概率<span class="pin-more">食品饮料基建指标参考 ›</span></div>
+          <div class="pin-title">卷勤奋 · 卷基建</div>
+          <div class="pin-desc">广告系统是<b>海选机制</b> —— 你投出的每个账户/广告/素材，都是一次"摇号"。</div>
+          <div class="pin-highlight">参与的子弹越多，跑出爆款的概率越高。</div>
+          <div class="pin-label">参考核心指标</div>
+          <div class="pin-tags">
+            <span>账户数</span>
+            <span>项目/广告数</span>
+            <span>素材数</span>
+            <span>日预算</span>
+          </div>
+        </div>
+      </div>
+      <div class="diligence-col">
+        <div class="diligence-chip tool-chip">
+          <div class="pin-head">工具赋能基建质量</div>
+          <div class="pin-title">卷智能投放 · 工具平权</div>
+          <div class="pin-highlight">通过工具提升基建质量。</div>
+          <div class="pin-label">核心动作</div>
+          <div class="pin-tags">
+            <span>全域通反向双开</span>
+            <span>ADQ 智投</span>
+            <span>全店托管</span>
+            <span>短直双开</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info">💡 点击任一色块跳转到对应详情页（链接待你提供）</div>
+</div>
+
+<!-- CTR · 行业动作 进展浮层 -->
+<div class="modal-mask" id="ctr-sales-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">内容力 · 行业动作 · 当前进展</div>
+      <button class="modal-close" data-close="ctr-sales-modal">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="progress-lane">
+        <div class="progress-lane-name">低客单赛道</div>
+        <div class="progress-item">
+          <div>
+            <div>KOC 加热 / 离线硬广收入</div>
+            <div class="progress-metric">QTD 日耗 <b>8.46 万</b> · 商消整体 <b>17.22 万</b>　|　客户数 <b>979</b> · 商消整体 <b>1265</b></div>
+          </div>
+          <div class="status doing">推进中</div>
+        </div>
+        <div class="progress-item">
+          <div>MCN 机构素材采买（预包装 + 膳食）</div>
+          <div class="status doing">推进中</div>
+        </div>
+      </div>
+      <div class="progress-lane">
+        <div class="progress-lane-name">产业带赛道</div>
+        <div class="progress-item">
+          <div>
+            <div>达人 × 场次 × 品牌 矩阵扩充</div>
+            <div class="progress-metric">QTD <b>11</b> 个达人 × <b>14</b> 个品牌，共 <b>30</b> 场次</div>
+          </div>
+          <div class="status doing">推进中</div>
+        </div>
+      </div>
+      <div class="progress-lane">
+        <div class="progress-lane-name">高价赛道</div>
+        <div class="progress-item">
+          <div>
+            <div>达人种草 / 加热 / 切片 一体化</div>
+            <div class="progress-metric">QTD <b>5</b> 个达人 × <b>15</b> 个品牌</div>
+          </div>
+          <div class="status todo">待启动</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CVR · 行业动作 进展浮层 -->
+<div class="modal-mask" id="cvr-sales-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">行业动作（CVR） · 当前进展</div>
+      <button class="modal-close" data-close="cvr-sales-modal">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="progress-lane">
+        <div class="progress-lane-name">预包装赛道</div>
+        <div class="progress-item">
+          <div>
+            <div>明星代言 / IP 联名 / 中华老字号商品 引入与资质展现</div>
+            <div class="progress-metric">推进 <b>16</b> 个品牌 IP 联名合作，总金额 <b>5000 万</b></div>
+          </div>
+          <div class="status doing">推进中</div>
+        </div>
+        <div class="progress-item">
+          <div>普通商品本地化适配</div>
+          <div class="status todo">待启动</div>
+        </div>
+        <div class="progress-item">
+          <div>品牌矩阵直播间裂变</div>
+          <div class="status todo">待启动</div>
+        </div>
+      </div>
+      <div class="progress-lane">
+        <div class="progress-lane-name">产业带赛道</div>
+        <div class="progress-item">
+          <div>原产地标识商品 引入与展现</div>
+          <div class="status doing">推进中</div>
+        </div>
+        <div class="progress-item">
+          <div>时令生鲜图谱商品</div>
+          <div class="status todo">待启动</div>
+        </div>
+      </div>
+      <div class="progress-lane">
+        <div class="progress-lane-name">高价茶 + 酒水赛道</div>
+        <div class="progress-item">
+          <div>名山 / 名庄 / 名品 及期锚定品引入</div>
+          <div class="status doing">推进中</div>
+        </div>
+      </div>
+      <div class="progress-lane">
+        <div class="progress-lane-name">保健滋补赛道</div>
+        <div class="progress-item">
+          <div>基于人群 × 痛点 引入商品</div>
+          <div class="status todo">待启动</div>
+        </div>
+        <div class="progress-item">
+          <div>品牌矩阵直播间裂变</div>
+          <div class="status todo">待启动</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 拼概率 · L1 基建对照表 浮层 -->
+<div class="modal-mask" id="pin-modal">
+  <div class="modal modal-dark">
+    <div class="modal-header">
+      <div class="modal-title">模块一 · L1 基建</div>
+      <button class="modal-close" data-close="pin-modal">×</button>
+    </div>
+    <div class="pin-modal-body">
+      <div class="pin-modal-top">
+        <div class="pin-modal-tag">01　模块一 · L1 执行卡</div>
+        <div class="pin-modal-h1">L1 基建拉升对照表 · <span class="accent">食饮行业 BI 中位数</span></div>
+        <div class="pin-modal-lead">这是<b>"拼概率"</b>环节的入场券 —— 把当前消耗水位对应到尾/腰/头三档，5 项基建数字逐一对标。统计口径：<b>4 周去重 · 新口径</b>。</div>
+      </div>
+      <div class="pin-modal-grid">
+        <div>
+          <div class="pin-table-wrap">
+            <div class="pin-table-head">
+              <div class="t">📊 食饮行业基建中位数 · 按消耗规模分层</div>
+              <div class="s">样本 14,206 家 · 过去 4 周</div>
+            </div>
+            <table class="pin-table">
+              <thead>
+                <tr>
+                  <th>指标</th>
+                  <th class="col-tail">尾部客户<span class="sub">（0~3K）</span></th>
+                  <th class="col-mid">腰部客户<span class="sub">（3K~5W）</span></th>
+                  <th class="col-head">头部客户<span class="sub">（≥5W）</span></th>
+                  <th class="col-jump">尾→腰 跃迁</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>账户数 <span style="color:#64748b">4周去重</span></td>
+                  <td class="col-tail">1.0</td>
+                  <td class="col-mid">4.0</td>
+                  <td class="col-head">20.5</td>
+                  <td class="col-jump">×4.0</td>
+                </tr>
+                <tr>
+                  <td>项目/广告数 <span style="color:#64748b">有消耗 · 4周去重</span></td>
+                  <td class="col-tail">3.0</td>
+                  <td class="col-mid">43.5</td>
+                  <td class="col-head">278.5</td>
+                  <td class="col-jump">×14.5</td>
+                </tr>
+                <tr>
+                  <td>素材数 <span style="color:#64748b">实际使用 · 4周去重</span></td>
+                  <td class="col-tail">20.0</td>
+                  <td class="col-mid">536.0</td>
+                  <td class="col-head">2,045.0</td>
+                  <td class="col-jump">×26.8</td>
+                </tr>
+                <tr>
+                  <td>账户可用日预算 <span style="color:#64748b">万元</span></td>
+                  <td class="col-tail">0.07</td>
+                  <td class="col-mid">4.92</td>
+                  <td class="col-head">32.78</td>
+                  <td class="col-jump">×73.0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pin-warn">
+            ⚠️ <b>如何使用本表：</b>把你当前日均消耗对照到"尾/腰/头"列 → 4 项指标逐一比对。任一项明显落在尾部数值，说明<span class="em">对应维度的"子弹"没准备够</span>，必须先补齐再谈优化 —— <b>这是后面所有四力打法的前提。</b>
+          </div>
+        </div>
+        <div class="pin-side">
+          <div class="pin-side-card">
+            <div class="label">尾→腰最大鸿沟</div>
+            <div class="big orange">×73</div>
+            <div class="desc">日预算需要跃迁 73 倍 —— 这是最大短板</div>
+          </div>
+          <div class="pin-side-card">
+            <div class="label">素材数跃迁</div>
+            <div class="big pink">×27</div>
+            <div class="desc">尾部 20 条 → 腰部 536 条，创意是燃料</div>
+          </div>
+          <div class="pin-side-card">
+            <div class="label">尾部客户占比</div>
+            <div class="big red">93%</div>
+            <div class="desc">这是你大概率所在的客户基本盘</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 指标色块跳转链接（填好 URL 即生效）
+  const LINKS = { bid: "", ctr: "", cvr: "" };
+  document.querySelectorAll('.block').forEach(b => {
+    const key = b.dataset.key;
+    const url = LINKS[key];
+    if (url) { b.href = url; b.target = "_blank"; }
+    else {
+      b.addEventListener('click', e => {
+        e.preventDefault();
+        alert('「' + b.querySelector('.name').textContent + '」链接尚未配置');
+      });
+    }
+  });
+
+  // 通用浮层：.clickable[data-modal] 触发；所有 .modal-close[data-close] 关闭
+  const openModal = id => document.getElementById(id)?.classList.add('show');
+  const closeModal = id => document.getElementById(id)?.classList.remove('show');
+
+  document.getElementById('ctr-sales-card')?.addEventListener('click', () => openModal('ctr-sales-modal'));
+  document.getElementById('cvr-sales-card')?.addEventListener('click', () => openModal('cvr-sales-modal'));
+  document.getElementById('pin-chip')?.addEventListener('click', () => openModal('pin-modal'));
+
+  document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+  });
+  document.querySelectorAll('.modal-mask').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-mask.show').forEach(m => m.classList.remove('show'));
+    }
+  });
+</script>
+</body>
+</html>
