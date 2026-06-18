@@ -28,6 +28,9 @@ tr:hover{background:#f6f9ff}
 .rk1{background:#fff1f0;color:#f5222d}.rk2{background:#fff7e6;color:#fa8c16}.rk3{background:#f6ffed;color:#52c41a}.rkn{background:#f5f5f5;color:#999}
 .n{font-variant-numeric:tabular-nums}.neg{color:#f5222d;font-weight:600}.pos{color:#52c41a}.zero{color:#aaa}
 .note{padding:10px 32px 20px;font-size:12px;color:#999}
+.sec-title{padding:18px 32px 8px;font-size:16px;font-weight:700;color:#1a73e8;display:flex;align-items:center;gap:8px}
+.sec-title .bar{width:4px;height:18px;background:#1a73e8;border-radius:2px}
+.sec-title .sub{font-size:12px;font-weight:400;color:#999}
 </style>
 </head>
 <body>
@@ -44,19 +47,28 @@ tr:hover{background:#f6f9ff}
     <option value="all">全部客户</option>
   </select>
 </div>
+<div class="sec-title"><span class="bar"></span>公众号互选<span class="sub" id="sub-g"></span></div>
 <div class="tw">
 <table>
 <thead><tr>
   <th style="width:44px">#</th><th>客户简称</th>
-  <th>视频号25Q2(万)</th><th>视频号26Q2(万)</th><th>视频号变化</th>
-  <th>公众号25Q2(万)</th><th>公众号26Q2(万)</th><th>公众号变化</th>
-  <th><b>合计25Q2(万)</b></th><th><b>合计26Q2(万)</b></th>
-  <th><b>合计变化(万)</b></th>
+  <th>公众号25Q2(万)</th><th>公众号26Q2(万)</th><th>变化(万)</th>
 </tr></thead>
-<tbody id="tb"><tr><td colspan="11" style="text-align:center;color:#999;padding:40px">加载中...</td></tr></tbody>
+<tbody id="tb-g"><tr><td colspan="5" style="text-align:center;color:#999;padding:40px">加载中...</td></tr></tbody>
 </table>
 </div>
-<div class="note">注：数据仅含「互选视频号」和「互选公众号」；变化 = 26Q2 − 25Q2，负值=收入减少。</div>
+
+<div class="sec-title"><span class="bar"></span>视频号互选<span class="sub" id="sub-v"></span></div>
+<div class="tw">
+<table>
+<thead><tr>
+  <th style="width:44px">#</th><th>客户简称</th>
+  <th>视频号25Q2(万)</th><th>视频号26Q2(万)</th><th>变化(万)</th>
+</tr></thead>
+<tbody id="tb-v"><tr><td colspan="5" style="text-align:center;color:#999;padding:40px">加载中...</td></tr></tbody>
+</table>
+</div>
+<div class="note">注：数据仅含「互选视频号」和「互选公众号」；变化 = 26Q2 − 25Q2，负值=收入减少。每张表只展示该渠道有投放记录的客户。</div>
 <script src="huxuan_data.js"></script>
 <script>
 function fmt(v){return(v/10000).toFixed(1);}
@@ -66,10 +78,6 @@ function render(){
   if(typeof HUXUAN_DATA==='undefined')return;
   const q=document.getElementById('sr').value.trim().toLowerCase();
   const f=document.getElementById('flt').value;
-  let data=[...HUXUAN_DATA];
-  if(q)data=data.filter(r=>r[0].toLowerCase().includes(q));
-  if(f==='down')data=data.filter(r=>r[7]<0).sort((a,b)=>a[7]-b[7]);
-  else if(f==='up')data=data.filter(r=>r[7]>0).sort((a,b)=>b[7]-a[7]);
   const sv25=HUXUAN_DATA.reduce((s,r)=>s+r[1],0);
   const sv26=HUXUAN_DATA.reduce((s,r)=>s+r[2],0);
   const sg25=HUXUAN_DATA.reduce((s,r)=>s+r[3],0);
@@ -81,25 +89,32 @@ function render(){
     '<div class="sc"><div class="l">公众号25Q2</div><div class="v">'+(sg25/10000).toFixed(1)+'万</div></div>'+
     '<div class="sc"><div class="l">公众号26Q2</div><div class="v">'+(sg26/10000).toFixed(1)+'万</div><div class="d '+(sg26>=sg25?'up':'down')+'">'+(sg26>=sg25?'▲':'▼')+Math.abs((sg26-sg25)/10000).toFixed(1)+'万</div></div>'+
     '<div class="sc" style="background:#e8f0fe"><div class="l">合计变化</div><div class="v '+(st26>=st25?'up':'down')+'">'+(st26>=st25?'+':'')+((st26-st25)/10000).toFixed(1)+'万</div></div>';
+  // c25/c26 = 该渠道列索引；公众号=[3,4]，视频号=[1,2]
+  renderTable('tb-g','sub-g',3,4,q,f);
+  renderTable('tb-v','sub-v',1,2,q,f);
+}
+function renderTable(tbId,subId,i25,i26,q,f){
+  let data=HUXUAN_DATA.filter(r=>r[i25]>0||r[i26]>0);
+  if(q)data=data.filter(r=>r[0].toLowerCase().includes(q));
+  const chg=r=>r[i26]-r[i25];
+  if(f==='down')data=data.filter(r=>chg(r)<0).sort((a,b)=>chg(a)-chg(b));
+  else if(f==='up')data=data.filter(r=>chg(r)>0).sort((a,b)=>chg(b)-chg(a));
+  else data=[...data].sort((a,b)=>chg(a)-chg(b));
+  const s25=data.reduce((s,r)=>s+r[i25],0),s26=data.reduce((s,r)=>s+r[i26],0),d=s26-s25;
+  document.getElementById(subId).innerHTML='（'+data.length+'家 · 25Q2 '+(s25/10000).toFixed(1)+'万 → 26Q2 '+(s26/10000).toFixed(1)+'万，'+(d>=0?'+':'')+(d/10000).toFixed(1)+'万）';
   let h='';
   data.forEach((r,i)=>{
-    const vc=r[2]-r[1],gc=r[4]-r[3];
+    const c=r[i26]-r[i25];
     h+='<tr>'+
       '<td><span class="rk '+rcls(i)+'">'+(i+1)+'</span></td>'+
       '<td>'+r[0]+'</td>'+
-      '<td class="n">'+fmt(r[1])+'</td>'+
-      '<td class="n">'+fmt(r[2])+'</td>'+
-      '<td class="n '+cls(vc)+'">'+(vc>0?'+':'')+(vc/10000).toFixed(1)+'</td>'+
-      '<td class="n">'+fmt(r[3])+'</td>'+
-      '<td class="n">'+fmt(r[4])+'</td>'+
-      '<td class="n '+cls(gc)+'">'+(gc>0?'+':'')+(gc/10000).toFixed(1)+'</td>'+
-      '<td class="n" style="font-weight:600">'+fmt(r[5])+'</td>'+
-      '<td class="n" style="font-weight:600">'+fmt(r[6])+'</td>'+
-      '<td class="n '+cls(r[7])+'" style="font-weight:700">'+(r[7]>0?'+':'')+(r[7]/10000).toFixed(1)+'</td>'+
+      '<td class="n">'+fmt(r[i25])+'</td>'+
+      '<td class="n">'+fmt(r[i26])+'</td>'+
+      '<td class="n '+cls(c)+'" style="font-weight:600">'+(c>0?'+':'')+(c/10000).toFixed(1)+'</td>'+
       '</tr>';
   });
-  if(!h)h='<tr><td colspan="11" style="text-align:center;color:#999;padding:40px">无匹配结果</td></tr>';
-  document.getElementById('tb').innerHTML=h;
+  if(!h)h='<tr><td colspan="5" style="text-align:center;color:#999;padding:40px">无匹配结果</td></tr>';
+  document.getElementById(tbId).innerHTML=h;
 }
 render();
 </script>
