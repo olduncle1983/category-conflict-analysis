@@ -47,17 +47,6 @@ tr:hover{background:#f6f9ff}
     <option value="all">全部客户</option>
   </select>
 </div>
-<div class="sec-title"><span class="bar"></span>公众号互选<span class="sub" id="sub-g"></span></div>
-<div class="tw">
-<table>
-<thead><tr>
-  <th style="width:44px">#</th><th>客户简称</th>
-  <th>公众号25Q2(万)</th><th>公众号26Q2(万)</th><th>变化(万)</th>
-</tr></thead>
-<tbody id="tb-g"><tr><td colspan="5" style="text-align:center;color:#999;padding:40px">加载中...</td></tr></tbody>
-</table>
-</div>
-
 <div class="sec-title"><span class="bar"></span>视频号互选<span class="sub" id="sub-v"></span></div>
 <div class="tw">
 <table>
@@ -66,6 +55,17 @@ tr:hover{background:#f6f9ff}
   <th>视频号25Q2(万)</th><th>视频号26Q2(万)</th><th>变化(万)</th>
 </tr></thead>
 <tbody id="tb-v"><tr><td colspan="5" style="text-align:center;color:#999;padding:40px">加载中...</td></tr></tbody>
+</table>
+</div>
+
+<div class="sec-title"><span class="bar"></span>公众号互选<span class="sub" id="sub-g"></span></div>
+<div class="tw">
+<table>
+<thead><tr>
+  <th style="width:44px">#</th><th>客户简称</th>
+  <th>公众号25Q2(万)</th><th>公众号26Q2(万)</th><th>变化(万)</th>
+</tr></thead>
+<tbody id="tb-g"><tr><td colspan="5" style="text-align:center;color:#999;padding:40px">加载中...</td></tr></tbody>
 </table>
 </div>
 <div class="note">注：数据仅含「互选视频号」和「互选公众号」；变化 = 26Q2 − 25Q2，负值=收入减少。每张表只展示该渠道有投放记录的客户。</div>
@@ -90,8 +90,8 @@ function render(){
     '<div class="sc"><div class="l">公众号26Q2</div><div class="v">'+(sg26/10000).toFixed(1)+'万</div><div class="d '+(sg26>=sg25?'up':'down')+'">'+(sg26>=sg25?'▲':'▼')+Math.abs((sg26-sg25)/10000).toFixed(1)+'万</div></div>'+
     '<div class="sc" style="background:#e8f0fe"><div class="l">合计变化</div><div class="v '+(st26>=st25?'up':'down')+'">'+(st26>=st25?'+':'')+((st26-st25)/10000).toFixed(1)+'万</div></div>';
   // c25/c26 = 该渠道列索引；公众号=[3,4]，视频号=[1,2]
-  renderTable('tb-g','sub-g',3,4,q,f);
   renderTable('tb-v','sub-v',1,2,q,f);
+  renderTable('tb-g','sub-g',3,4,q,f);
 }
 function renderTable(tbId,subId,i25,i26,q,f){
   let data=HUXUAN_DATA.filter(r=>r[i25]>0||r[i26]>0);
