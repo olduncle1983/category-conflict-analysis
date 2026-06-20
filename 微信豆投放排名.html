@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>微信豆投放排名 · KOC加热豆子在投客户</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0 }
+body { font-family: -apple-system, "PingFang SC", "Helvetica Neue", Arial, sans-serif; background: #f5f7fa; color: #333; padding: 24px 32px }
+h1 { font-size: 22px; margin-bottom: 4px }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 20px }
+.summary-bar { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap }
+.bar-item { background: #fff; border-radius: 10px; padding: 14px 20px; min-width: 180px; box-shadow: 0 1px 4px rgba(0,0,0,.08) }
+.bar-item .l { font-size: 12px; color: #888; margin-bottom: 4px }
+.bar-item .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums }
+.bar-item.bar-total .v { color: #e65100 }
+.bar-item.bar-cat .v { color: #1565c0 }
+.bar-item.bar-top .v { color: #c2185b }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px }
+.card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,.08); border-top: 3px solid #ccc }
+.card.ttl { padding: 12px 16px; font-weight: 700; font-size: 14px; color: #fff; display: flex; justify-content: space-between; align-items: center }
+.card.ttl .rank-badge { background: rgba(255,255,255,.25); border-radius: 12px; padding: 2px 10px; font-size: 12px; font-weight: 400 }
+.card table { width: 100%; border-collapse: collapse; font-size: 13px }
+.card table th { background: #f8f9fa; padding: 7px 10px; text-align: left; color: #666; font-weight: 600; font-size: 12px; border-bottom: 1px solid #eee }
+.card table td { padding: 8px 10px; border-bottom: 1px solid #f2f3f5; vertical-align: top }
+.card table tr:last-child td { border-bottom: none }
+.card table .num { text-align: right; font-variant-numeric: tabular-nums; color: #e65100; font-weight: 600; white-space: nowrap }
+.card table .rk { color: #aaa; font-size: 12px; width: 24px }
+.card table .shop { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.tag-dou { background: #fff3e0; color: #e65100; border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 600 }
+footer { margin-top: 32px; color: #aaa; font-size: 12px; text-align: center }
+</style>
+</head>
+<body>
+<h1>🫘 微信豆投放排名</h1>
+<p class="subtitle">数据来源：KOC加热豆子在投客户（预估）· 视频号5月高GMV低tr商家.xlsx</p>
+
+<div class="summary-bar">
+<div class="bar-item bar-total"><div class="l">微信豆日耗预估合计</div><div class="v">745.5 万/日</div></div>
+<div class="bar-item bar-cat"><div class="l">覆盖二级类目</div><div class="v">33 个</div></div>
+<div class="bar-item bar-top"><div class="l">Top1 类目（粮油调味）</div><div class="v">185.1 万/日</div></div>
+</div>
+<div class="grid">
+<div class="card" style="border-top-color:#e65100">
+<div class="ttl" style="background:#e65100"><span>📦 粮油调味</span><span class="rank-badge">#1 · 185.1 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="晟麦">晟麦</td><td class="num"><span class="tag-dou">4.60 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="珍星鲜调味品">珍星鲜调味品</td><td class="num"><span class="tag-dou">3.54 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="馋小德光禧优选店">馋小德光禧优选店</td><td class="num"><span class="tag-dou">3.30 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="黔唛哆">黔唛哆</td><td class="num"><span class="tag-dou">2.95 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="天勤粒粒净玉米工厂店">天勤粒粒净玉米工厂店</td><td class="num"><span class="tag-dou">2.85 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#c2185b">
+<div class="ttl" style="background:#c2185b"><span>📦 休闲食品</span><span class="rank-badge">#2 · 153.4 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="三只松鼠总店">三只松鼠总店</td><td class="num"><span class="tag-dou">7.75 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="上行斋">上行斋</td><td class="num"><span class="tag-dou">4.68 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="良品铺子">良品铺子</td><td class="num"><span class="tag-dou">3.32 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="小牛托尼古程食品">小牛托尼古程食品</td><td class="num"><span class="tag-dou">3.07 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="曦曦甄选好物">曦曦甄选好物</td><td class="num"><span class="tag-dou">2.86 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#1565c0">
+<div class="ttl" style="background:#1565c0"><span>📦 饮料冲调</span><span class="rank-badge">#3 · 91.04 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="田野说饮品">田野说饮品</td><td class="num"><span class="tag-dou">2.47 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="Ganten尔吾食品店">Ganten尔吾食品店</td><td class="num"><span class="tag-dou">2.41 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="众锦汇集">众锦汇集</td><td class="num"><span class="tag-dou">2.40 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="Oceania Gold大洋洲">Oceania Gold大洋洲</td><td class="num"><span class="tag-dou">2.30 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="谷本日记">谷本日记</td><td class="num"><span class="tag-dou">2.07 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#6a1b9a">
+<div class="ttl" style="background:#6a1b9a"><span>📦 传统滋补</span><span class="rank-badge">#4 · 49.63 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="美谷季">美谷季</td><td class="num"><span class="tag-dou">3.94 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="喜纯滋补商城">喜纯滋补商城</td><td class="num"><span class="tag-dou">3.26 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="汉方爷爷">汉方爷爷</td><td class="num"><span class="tag-dou">3.01 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="劲家庄滋补食品">劲家庄滋补食品</td><td class="num"><span class="tag-dou">2.91 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="原瑧艮山谦滋补">原瑧艮山谦滋补</td><td class="num"><span class="tag-dou">2.50 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#2e7d32">
+<div class="ttl" style="background:#2e7d32"><span>📦 茗茶</span><span class="rank-badge">#5 · 41.18 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="医方初运动健康">医方初运动健康</td><td class="num"><span class="tag-dou">3.68 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="医方初夏港基础营养">医方初夏港基础营养</td><td class="num"><span class="tag-dou">2.98 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="大头大脑">大头大脑</td><td class="num"><span class="tag-dou">1.65 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="葆天和 宝元堂">葆天和 宝元堂</td><td class="num"><span class="tag-dou">1.62 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="仰望星河">仰望星河</td><td class="num"><span class="tag-dou">1.12 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#0277bd">
+<div class="ttl" style="background:#0277bd"><span>📦 海鲜水产</span><span class="rank-badge">#6 · 26.95 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="下厨房">下厨房</td><td class="num"><span class="tag-dou">3.67 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="鱻谣生鲜">鱻谣生鲜</td><td class="num"><span class="tag-dou">1.79 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="不花心生鲜">不花心生鲜</td><td class="num"><span class="tag-dou">1.61 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="不吃小鱼半海工厂店">不吃小鱼半海工厂店</td><td class="num"><span class="tag-dou">1.10 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="不花心水产">不花心水产</td><td class="num"><span class="tag-dou">1.00 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 普通膳食营养补充食品</span><span class="rank-badge">#7 · 20.08 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="仁养品健康商城">仁养品健康商城</td><td class="num"><span class="tag-dou">3.61 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="医方初运动营养">医方初运动营养</td><td class="num"><span class="tag-dou">2.34 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="善固益营养健康">善固益营养健康</td><td class="num"><span class="tag-dou">2.17 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="21金维他贰十壹皓晟">21金维他贰十壹皓晟</td><td class="num"><span class="tag-dou">1.45 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="本然重塑">本然重塑</td><td class="num"><span class="tag-dou">1.42 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#b71c1c">
+<div class="ttl" style="background:#b71c1c"><span>📦 白酒</span><span class="rank-badge">#8 · 17.95 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="褚酒香甜">褚酒香甜</td><td class="num"><span class="tag-dou">2.12 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="赖氏父子酒业店">赖氏父子酒业店</td><td class="num"><span class="tag-dou">1.29 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="阳关酒类">阳关酒类</td><td class="num"><span class="tag-dou">1.13 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="褚酒管理">褚酒管理</td><td class="num"><span class="tag-dou">0.99 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="工匠名酒小店">工匠名酒小店</td><td class="num"><span class="tag-dou">0.91 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物保健</span><span class="rank-badge">#9 · 16.36 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="上海梦薇宠物用品有限公司">上海梦薇宠物用品有限公司</td><td class="num"><span class="tag-dou">12.15 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="洛帕LUOPA喵星人宠物食品">洛帕LUOPA喵星人宠物食品</td><td class="num"><span class="tag-dou">0.79 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="唯特医生">唯特医生</td><td class="num"><span class="tag-dou">0.54 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="美鸥梦微宠物用品食品店">美鸥梦微宠物用品食品店</td><td class="num"><span class="tag-dou">0.40 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="派迪诺博士">派迪诺博士</td><td class="num"><span class="tag-dou">0.33 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 进口食品</span><span class="rank-badge">#10 · 15.37 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="食草生活进口食品">食草生活进口食品</td><td class="num"><span class="tag-dou">3.58 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="Dorabella朵娜贝拉">Dorabella朵娜贝拉</td><td class="num"><span class="tag-dou">1.32 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="火船咖啡">火船咖啡</td><td class="num"><span class="tag-dou">1.23 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="宫村藤四季生活">宫村藤四季生活</td><td class="num"><span class="tag-dou">0.71 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="theland纽仕兰牛奶">theland纽仕兰牛奶</td><td class="num"><span class="tag-dou">0.71 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#ef6c00">
+<div class="ttl" style="background:#ef6c00"><span>📦 面点烘焙</span><span class="rank-badge">#11 · 12.73 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="鹿有有">鹿有有</td><td class="num"><span class="tag-dou">4.71 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="麦醉侠">麦醉侠</td><td class="num"><span class="tag-dou">1.39 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="小萨牛牛">小萨牛牛</td><td class="num"><span class="tag-dou">0.87 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="心现阳粗粮食品店">心现阳粗粮食品店</td><td class="num"><span class="tag-dou">0.78 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="丰昌洋天狼">丰昌洋天狼</td><td class="num"><span class="tag-dou">0.56 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 半成品菜/方便菜</span><span class="rank-badge">#12 · 12.36 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="臻鲜配">臻鲜配</td><td class="num"><span class="tag-dou">2.39 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="如意三宝">如意三宝</td><td class="num"><span class="tag-dou">1.52 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="海蓝厨房">海蓝厨房</td><td class="num"><span class="tag-dou">0.86 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="红盒子生鲜店">红盒子生鲜店</td><td class="num"><span class="tag-dou">0.75 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="南国宏豆食品">南国宏豆食品</td><td class="num"><span class="tag-dou">0.73 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物零食</span><span class="rank-badge">#13 · 12.26 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="哆嗳哆萌小店">哆嗳哆萌小店</td><td class="num"><span class="tag-dou">2.07 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="大口汪大口汪宠物食品">大口汪大口汪宠物食品</td><td class="num"><span class="tag-dou">1.63 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="农夫牧场宠物食品">农夫牧场宠物食品</td><td class="num"><span class="tag-dou">1.11 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="迪倍芬宠物食品">迪倍芬宠物食品</td><td class="num"><span class="tag-dou">0.92 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="哈仔宠物食品">哈仔宠物食品</td><td class="num"><span class="tag-dou">0.88 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#388e3c">
+<div class="ttl" style="background:#388e3c"><span>📦 水果</span><span class="rank-badge">#14 · 10.46 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="全爸农产品甄选">全爸农产品甄选</td><td class="num"><span class="tag-dou">1.03 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="玉鲜果农产品">玉鲜果农产品</td><td class="num"><span class="tag-dou">0.59 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="禧味全丰辉果蔬专业合作社生鲜店">禧味全丰辉果蔬专业合作社生鲜店</td><td class="num"><span class="tag-dou">0.48 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="本来果坊精选果蔬店">本来果坊精选果蔬店</td><td class="num"><span class="tag-dou">0.43 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="链链看农产品">链链看农产品</td><td class="num"><span class="tag-dou">0.38 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#f57f17">
+<div class="ttl" style="background:#f57f17"><span>📦 啤酒</span><span class="rank-badge">#15 · 9.00 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="百威啤酒">百威啤酒</td><td class="num"><span class="tag-dou">7.52 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="青岛啤酒三藏商贸畅享河南">青岛啤酒三藏商贸畅享河南</td><td class="num"><span class="tag-dou">0.60 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="青岛啤酒青和石商贸畅享河北">青岛啤酒青和石商贸畅享河北</td><td class="num"><span class="tag-dou">0.24 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="喜力啤酒">喜力啤酒</td><td class="num"><span class="tag-dou">0.23 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="轻简公式零糖啤酒">轻简公式零糖啤酒</td><td class="num"><span class="tag-dou">0.19 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#558b2f">
+<div class="ttl" style="background:#558b2f"><span>📦 蔬菜</span><span class="rank-badge">#16 · 8.68 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="怀奴焦作昀康土特产食品有限公司">怀奴焦作昀康土特产食品有限公司</td><td class="num"><span class="tag-dou">2.63 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="贵小馋农科鲜食">贵小馋农科鲜食</td><td class="num"><span class="tag-dou">0.62 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="阿伟家婆娘">阿伟家婆娘</td><td class="num"><span class="tag-dou">0.61 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="客家山里表嫂">客家山里表嫂</td><td class="num"><span class="tag-dou">0.53 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="邻家小亮企业店">邻家小亮企业店</td><td class="num"><span class="tag-dou">0.33 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#d84315">
+<div class="ttl" style="background:#d84315"><span>📦 禽肉蛋品</span><span class="rank-badge">#17 · 7.84 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="梅氏小店">梅氏小店</td><td class="num"><span class="tag-dou">1.67 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="圣农食品店">圣农食品店</td><td class="num"><span class="tag-dou">1.02 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="厚全">厚全</td><td class="num"><span class="tag-dou">1.00 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="百瑞红">百瑞红</td><td class="num"><span class="tag-dou">0.80 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="Tyson泰森食品">Tyson泰森食品</td><td class="num"><span class="tag-dou">0.50 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物日用</span><span class="rank-badge">#18 · 7.24 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="露思宠物食品">露思宠物食品</td><td class="num"><span class="tag-dou">2.22 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="赛龙宠物用品">赛龙宠物用品</td><td class="num"><span class="tag-dou">0.67 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="宠贵诺">宠贵诺</td><td class="num"><span class="tag-dou">0.52 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="听宠原喵宠物用品">听宠原喵宠物用品</td><td class="num"><span class="tag-dou">0.41 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="喵的荷包蛋宠物用品">喵的荷包蛋宠物用品</td><td class="num"><span class="tag-dou">0.40 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 速食熟食</span><span class="rank-badge">#19 · 6.68 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="Light Foodie轻什家">Light Foodie轻什家</td><td class="num"><span class="tag-dou">0.77 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="NIETO MARTIN臻腿世家">NIETO MARTIN臻腿世家</td><td class="num"><span class="tag-dou">0.62 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="大嘴鳄生鲜">大嘴鳄生鲜</td><td class="num"><span class="tag-dou">0.42 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="厝边丸姐">厝边丸姐</td><td class="num"><span class="tag-dou">0.40 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="平昇兄弟火锅丸店">平昇兄弟火锅丸店</td><td class="num"><span class="tag-dou">0.35 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 黄酒/米酒/养生酒</span><span class="rank-badge">#20 · 5.92 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="绍兴三儿黄酒">绍兴三儿黄酒</td><td class="num"><span class="tag-dou">1.39 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="以味坊">以味坊</td><td class="num"><span class="tag-dou">0.57 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="窝窝米酒">窝窝米酒</td><td class="num"><span class="tag-dou">0.43 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="裕鹿山欣丰多酒业">裕鹿山欣丰多酒业</td><td class="num"><span class="tag-dou">0.33 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="郑家酱商贸有限公司">郑家酱商贸有限公司</td><td class="num"><span class="tag-dou">0.32 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#6a1b9a">
+<div class="ttl" style="background:#6a1b9a"><span>📦 葡萄酒</span><span class="rank-badge">#21 · 5.74 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="玛莎诺娅红酒">玛莎诺娅红酒</td><td class="num"><span class="tag-dou">2.85 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="玛莎诺娅酒类">玛莎诺娅酒类</td><td class="num"><span class="tag-dou">0.52 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="玛莎诺娅萄气酒类">玛莎诺娅萄气酒类</td><td class="num"><span class="tag-dou">0.51 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="玛莎诺娅红酒馆">玛莎诺娅红酒馆</td><td class="num"><span class="tag-dou">0.42 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="一号葡萄酒">一号葡萄酒</td><td class="num"><span class="tag-dou">0.29 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#0097a7">
+<div class="ttl" style="background:#0097a7"><span>📦 乳品冷饮</span><span class="rank-badge">#22 · 5.39 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="皇家小虎">皇家小虎</td><td class="num"><span class="tag-dou">1.29 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="美登高世峰">美登高世峰</td><td class="num"><span class="tag-dou">1.25 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="蒙牛低温奶商城">蒙牛低温奶商城</td><td class="num"><span class="tag-dou">0.89 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="广沅雪糕冷饮店">广沅雪糕冷饮店</td><td class="num"><span class="tag-dou">0.64 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="褚橙">褚橙</td><td class="num"><span class="tag-dou">0.38 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 洋酒</span><span class="rank-badge">#23 · 5.31 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="商盈酩酒供应链">商盈酩酒供应链</td><td class="num"><span class="tag-dou">0.97 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="华商酒藏烈酒供应链">华商酒藏烈酒供应链</td><td class="num"><span class="tag-dou">0.49 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="格兰尼维GIENONEVE">格兰尼维GIENONEVE</td><td class="num"><span class="tag-dou">0.49 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="芳鹤慕岸酒业">芳鹤慕岸酒业</td><td class="num"><span class="tag-dou">0.49 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="盈商酒行">盈商酒行</td><td class="num"><span class="tag-dou">0.48 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物主粮</span><span class="rank-badge">#24 · 5.03 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="鲜粮说宠物食品">鲜粮说宠物食品</td><td class="num"><span class="tag-dou">1.67 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="佩普宠物食品">佩普宠物食品</td><td class="num"><span class="tag-dou">0.50 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="糗糗庄园">糗糗庄园</td><td class="num"><span class="tag-dou">0.34 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="泰迪小七吖小七是你吖">泰迪小七吖小七是你吖</td><td class="num"><span class="tag-dou">0.33 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="宽福猫狗宠物食品">宽福猫狗宠物食品</td><td class="num"><span class="tag-dou">0.26 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物医疗</span><span class="rank-badge">#25 · 3.22 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="派斯乐宠物">派斯乐宠物</td><td class="num"><span class="tag-dou">0.40 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="杰维士宠物用品店">杰维士宠物用品店</td><td class="num"><span class="tag-dou">0.39 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="宠倍安宠物企业店">宠倍安宠物企业店</td><td class="num"><span class="tag-dou">0.35 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="严医森">严医森</td><td class="num"><span class="tag-dou">0.32 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="迅销百家牧养殖甑选">迅销百家牧养殖甑选</td><td class="num"><span class="tag-dou">0.30 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 水族</span><span class="rank-badge">#26 · 2.64 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="毛老师养虾">毛老师养虾</td><td class="num"><span class="tag-dou">0.62 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="鱼耀水产养殖店">鱼耀水产养殖店</td><td class="num"><span class="tag-dou">0.30 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="喜蔓Ceonar鱼池过滤器工厂店">喜蔓Ceonar鱼池过滤器工厂店</td><td class="num"><span class="tag-dou">0.30 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="渔人陈刚源玖水产店">渔人陈刚源玖水产店</td><td class="num"><span class="tag-dou">0.22 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="贯蕴水产店">贯蕴水产店</td><td class="num"><span class="tag-dou">0.20 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 猪牛羊肉</span><span class="rank-badge">#27 · 2.37 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="禾牛集企业店">禾牛集企业店</td><td class="num"><span class="tag-dou">0.58 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="鲜会鲜">鲜会鲜</td><td class="num"><span class="tag-dou">0.47 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="拾分味道">拾分味道</td><td class="num"><span class="tag-dou">0.26 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="大大乐优品">大大乐优品</td><td class="num"><span class="tag-dou">0.25 万</span></td></tr>
+<tr><td class="rk">5</td><td class="shop" title="章丘区黄传发正宗黄家烤肉">章丘区黄传发正宗黄家烤肉</td><td class="num"><span class="tag-dou">0.19 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 果酒</span><span class="rank-badge">#28 · 2.23 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="枕酿米酒果酒">枕酿米酒果酒</td><td class="num"><span class="tag-dou">1.56 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="祥芮坊酒水小店">祥芮坊酒水小店</td><td class="num"><span class="tag-dou">0.35 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="漫时刻酒类店铺">漫时刻酒类店铺</td><td class="num"><span class="tag-dou">0.22 万</span></td></tr>
+<tr><td class="rk">4</td><td class="shop" title="喜野">喜野</td><td class="num"><span class="tag-dou">0.10 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物玩具</span><span class="rank-badge">#29 · 0.99 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="嗨赞">嗨赞</td><td class="num"><span class="tag-dou">0.77 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="petgravity宠有引力">petgravity宠有引力</td><td class="num"><span class="tag-dou">0.11 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="瓜洲牧小店">瓜洲牧小店</td><td class="num"><span class="tag-dou">0.11 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 洗护美容</span><span class="rank-badge">#30 · 0.88 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="恩玖拉NJULA">恩玖拉NJULA</td><td class="num"><span class="tag-dou">0.47 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="pukaco宠物用品店">pukaco宠物用品店</td><td class="num"><span class="tag-dou">0.26 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="宜宝">宜宝</td><td class="num"><span class="tag-dou">0.15 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 宠物出行</span><span class="rank-badge">#31 · 0.53 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="宠咩宠物用品店">宠咩宠物用品店</td><td class="num"><span class="tag-dou">0.27 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="萌仔七宠物用品店">萌仔七宠物用品店</td><td class="num"><span class="tag-dou">0.17 万</span></td></tr>
+<tr><td class="rk">🥉</td><td class="shop" title="柒哦宠物生活">柒哦宠物生活</td><td class="num"><span class="tag-dou">0.09 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 保健食品</span><span class="rank-badge">#32 · 0.47 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="东鹏饮料">东鹏饮料</td><td class="num"><span class="tag-dou">0.47 万</span></td></tr>
+</table></div>
+<div class="card" style="border-top-color:#546e7a">
+<div class="ttl" style="background:#546e7a"><span>📦 异宠用品</span><span class="rank-badge">#33 · 0.42 万/日</span></div>
+<table>
+<tr><th class="rk">#</th><th>小店名称</th><th class="num">微信豆日耗预估</th></tr>
+<tr><td class="rk">🥇</td><td class="shop" title="宠萌爪宠物用品店">宠萌爪宠物用品店</td><td class="num"><span class="tag-dou">0.31 万</span></td></tr>
+<tr><td class="rk">🥈</td><td class="shop" title="九九小鹦">九九小鹦</td><td class="num"><span class="tag-dou">0.11 万</span></td></tr>
+</table></div>
+</div>
+<footer>生成时间：2026-06-12 · 数据区间：5月 · 共 33 个二级类目 · 微信豆日耗预估合计 745.5 万/日</footer>
+</body></html>
