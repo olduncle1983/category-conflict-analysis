@@ -72,29 +72,6 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
 <script>
 const chart = echarts.init(document.getElementById('chart'));
 
-// 辅助函数：创建45°斜线纹理的 Pattern
-function createSlashPattern(baseColor, lineColor, dashed) {
-    var canvas = document.createElement('canvas');
-    canvas.width = 10;
-    canvas.height = 10;
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = baseColor;
-    ctx.fillRect(0, 0, 10, 10);
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 1;
-    if (dashed) {
-        ctx.setLineDash([3, 3]);
-    }
-    ctx.beginPath();
-    ctx.moveTo(0, 10);
-    ctx.lineTo(10, 0);
-    ctx.stroke();
-    return new echarts.graphic.Pattern({
-        image: canvas,
-        repeat: 'repeat'
-    });
-}
-
 // ================================================================
 // DATA STRUCTURE
 // ================================================================
@@ -170,27 +147,27 @@ const option = {
       itemStyle: { color: '#7c3aed', borderRadius: [0, 0, 0, 0] },
       label: { show: false },  // 不显示任何数字
     },
-    // --- 流失客户: 25Q2 实线 + 实斜线纹理 ---
+    // --- 流失客户: 25Q2 实线 ---
     {
       name: '流失客户',
       type: 'bar',
       stack: 'revenue',
       data: [500, 0],
-      itemStyle: { color: createSlashPattern('#f59e0b', '#fff', false), borderRadius: [0, 0, 0, 0] },
+      itemStyle: { color: '#f59e0b', borderRadius: [0, 0, 0, 0] },
       label: {
         show: true, position: 'inside',
         formatter: function(p) { return p.value > 0 ? p.value + '万' : ''; },
         fontSize: 12, fontWeight: 'bold', color: '#fff',
       },
     },
-    // --- 流失客户: 26Q2 虚线 + 虚斜线纹理 (表示流失) ---
+    // --- 流失客户: 26Q2 虚线 (表示流失) ---
     {
       name: '流失客户',  // 同名→共用一个图例项
       type: 'bar',
       stack: 'revenue',
       data: [0, 500],
       itemStyle: {
-        color: createSlashPattern('rgba(245,158,11,0.18)', '#d97706', true),  // 半透明橙色底色 + 深橙虚斜线
+        color: 'rgba(245,158,11,0.15)',   // 半透明橙色
         borderColor: '#f59e0b',
         borderWidth: 2,
         borderType: [6, 4],  // 虚线
@@ -331,6 +308,66 @@ function updateBraces() {
       textAlign:'left', textBaseline:'middle'
     }});
   });
+  // ===== 箭头连线：左侧橙色区域 → 右侧橙色区域（同一批流失客户）=====
+  // 左侧流失500万区域中间：y = 516(其余) + 250 = 766
+  // 右侧流失500万区域中间：y = 1000(其余) + 250 = 1250
+  var lossMidY1 = 516 + 250;
+  var lossMidY2 = 1000 + 250;
+
+  var coords0 = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [0, lossMidY1]);
+  var coords1 = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [1, lossMidY2]);
+  if (coords0 && coords1) {
+    var x0 = coords0[0], y0 = coords0[1];
+    var x1 = coords1[0], y1 = coords1[1];
+    var barHalf = 40;  // barWidth=80 半宽
+    var startX = x0 + barHalf + 8;
+    var startY = y0;
+    var endX   = x1 - barHalf - 8;
+    var endY   = y1;
+
+    // 控制点：向上拱起
+    var cp1x = startX + (endX - startX) * 0.35;
+    var cp1y = startY - 50;
+    var cp2x = startX + (endX - startX) * 0.65;
+    var cp2y = endY - 50;
+
+    // 曲线
+    graphics.push({
+      type: 'bezierCurve',
+      position: [startX, startY],
+      shape: {
+        x1: 0, y1: 0,
+        cpx1: cp1x - startX, cpy1: cp1y - startY,
+        cpx2: cp2x - startX, cpy2: cp2y - startY,
+        x2: endX - startX, y2: endY - startY,
+      },
+      style: { stroke: '#d97706', lineWidth: 2, fill: 'transparent' }
+    });
+
+    // 箭头（终点三角形，指向右侧柱子）
+    graphics.push({
+      type: 'polygon',
+      position: [endX, endY],
+      shape: { points: [[0, -7], [12, 0], [0, 7]] },
+      style: { fill: '#d97706', stroke: 'none' }
+    });
+
+    // 文字标注（曲线顶部）
+    var txtX = (startX + endX) / 2;
+    var txtY = Math.min(cp1y, cp2y) - 14;
+    graphics.push({
+      type: 'text',
+      position: [txtX, txtY],
+      style: {
+        text: '同一批流失客户（500万）',
+        fontSize: 12, color: '#d97706', fontWeight: 'bold',
+        textAlign: 'center', textBaseline: 'bottom',
+        backgroundColor: 'rgba(255,255,255,0.9)',
+        padding: [3, 8], borderRadius: 4,
+      }
+    });
+  }
+
   chart.setOption({ graphic: graphics });
 }
 
