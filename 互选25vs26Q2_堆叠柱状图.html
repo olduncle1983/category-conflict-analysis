@@ -95,8 +95,8 @@ const option = {
       });
       // Add the "unconfirmed" note for 26Q2
       if (params[0].dataIndex === 1) {
-        html += `<div style="margin-top:6px;color:#16a34a;">+ 顺延Q3确认：+500万（未确认）</div>`;
-        html += `<div style="color:#16a34a;">+ 双计部分：+150万（未确认）</div>`;
+        html += `<div style="margin-top:6px;color:#2563eb;">+ 顺延Q3确认：+500万（未确认，蓝色虚线框）</div>`;
+        html += `<div style="color:#16a34a;">+ 双计部分：+150万（未确认，绿色虚线框）</div>`;
         html += `<div style="margin-top:4px;font-weight:700;color:#1e3a5f;">实际商机规模：1650万</div>`;
       }
       return `<div style="font-size:13px;line-height:1.8;">${html}</div>`;
@@ -175,8 +175,8 @@ const option = {
       stack: 'revenue',  // Same stack → appears on top of confirmed bars
       data: [0, 500],
       itemStyle: {
-        color: 'rgba(52,211,153,0.12)',
-        borderColor: '#34d399',
+        color: 'rgba(96,165,250,0.13)',   // 蓝色虚线框
+        borderColor: '#60a5fa',
         borderWidth: 2,
         borderType: [6, 4],  // dashed
         borderRadius: [0, 0, 0, 0],
@@ -187,7 +187,7 @@ const option = {
           if (p.dataIndex === 1 && p.value > 0) return '+500万\n(Q3确认)';
           return '';
         },
-        fontSize: 11, fontWeight: 'bold', color: '#16a34a', lineHeight: 16,
+        fontSize: 11, fontWeight: 'bold', color: '#2563eb', lineHeight: 16,
       },
       tooltip: { show: true, formatter: function(p) { return p.seriesName + '：+' + p.value + '万（Q3入账）'; } },
     },
@@ -198,7 +198,7 @@ const option = {
       stack: 'revenue',
       data: [0, 150],
       itemStyle: {
-        color: 'rgba(52,211,153,0.08)',
+        color: 'rgba(52,211,153,0.13)',   // 绿色虚线框（与蓝色区分）
         borderColor: '#34d399',
         borderWidth: 2,
         borderType: [6, 4],
