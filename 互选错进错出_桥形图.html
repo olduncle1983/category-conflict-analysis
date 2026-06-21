@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>互选 Q2 错进错出分析</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f5f7fa; padding: 32px 16px; display: flex; justify-content: center;
+}
+.container {
+  background: #fff; border-radius: 16px; padding: 36px 44px;
+  max-width: 1200px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
+.subtitle { font-size: 13px; color: #888; margin-bottom: 4px; }
+.note { font-size: 12px; color: #aaa; margin-bottom: 20px; }
+#chart { width: 100%; height: 500px; }
+.legend-box {
+  margin-top: 24px; padding: 20px 24px;
+  background: #f8f9fc; border-radius: 12px; border-left: 4px solid #4a6cf7;
+}
+.legend-box h3 { font-size: 14px; color: #1a1a2e; margin-bottom: 10px; font-weight: 600; }
+.legend-box p { font-size: 13px; color: #555; line-height: 2.2; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin: 0 2px; }
+.tag-red { background: #fee2e2; color: #dc2626; }
+.tag-green { background: #dcfce7; color: #16a34a; }
+.tag-purple { background: #ede9fe; color: #7c3aed; }
+.tag-gray { background: #f3f4f6; color: #6b7280; }
+.conclusion {
+  margin-top: 20px; padding: 16px 20px;
+  background: linear-gradient(135deg, #eef2ff, #f0fdf4);
+  border-radius: 10px; font-size: 14px; color: #1e3a5f; line-height: 1.8;
+}
+.conclusion strong { color: #dc2626; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📊 视频号互选 Q2 收入「错进错出」拆解</h1>
+  <div class="subtitle">去年基数调整 vs 今年收入调整 · 可比口径还原</div>
+  <div class="note">单位：万元 · 悬浮柱状查看明细 · 紫色=基数 红色=扣除 绿色=加回 蓝色=最终结果</div>
+  <div id="chart"></div>
+
+  <div class="legend-box">
+    <h3>📌 关键结论</h3>
+    <p>
+      <span class="tag tag-gray">去年名义 1496万</span>
+      → 剔除一次性招商转互选 <span class="tag tag-red">-480万</span>
+      → 去年可比基数 <strong style="color:#7c3aed">1016万</strong><br>
+      <span class="tag tag-gray">今年确认 1000万</span>
+      → 加回顺延Q3 <span class="tag tag-green">+500万</span> 及双计 <span class="tag tag-green">+150万</span>
+      → 今年商机规模 <strong style="color:#7c3aed">1650万</strong><br>
+      → 扣除真实流失 <span class="tag tag-red">-500万</span>
+      → 今年可比规模 <strong style="color:#0ea5e9">1150万</strong>（较去年基数 +134万，+13%）
+    </p>
+  </div>
+
+  <div class="conclusion">
+    ✅ <strong>核心判断</strong>：互选名义收入下跌，但剔除一次性因素后实际基本盘稳中微增；
+    主要风险是 <strong>500万客户真实流失</strong>，已在 Q3 重点追击。
+  </div>
+</div>
+
+<script>
+const chart = echarts.init(document.getElementById('chart'));
+
+const categories = [
+  '去年Q2\n名义收入', '招商转互选\n(一次性)', '去年Q2\n可比基数',
+  '今年Q2\n确认收入', '顺延Q3\n确认', '双计\n部分', '今年Q2\n商机规模', '客户\n流失', '今年Q2\n可比规模'
+];
+
+const option = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: { type: 'shadow' },
+    formatter: function(params) {
+      const tips = [
+        '<b>去年Q2名义收入</b><br>互选收入：1496万',
+        '<b>招商转互选（一次性）</b><br>去年含480万招商转互选<br>今年不再计入互选口径<br><span style="color:#dc2626;font-weight:700">-480万</span>',
+        '<b>去年Q2可比基数</b><br>剔除一次性后：1016万',
+        '<b>今年Q2确认收入</b><br>互选确认：1000万',
+        '<b>顺延Q3确认</b><br>商机已锁定，Q3入账<br><span style="color:#16a34a;font-weight:700">+500万</span>',
+        '<b>双计部分</b><br>走双计未体现在互选<br><span style="color:#16a34a;font-weight:700">+150万</span>',
+        '<b>今年Q2商机规模</b><br>加回后实际规模：1650万',
+        '<b>客户流失</b><br>真实流失，需Q3追击<br><span style="color:#dc2626;font-weight:700">-500万</span>',
+        '<b>今年Q2可比规模</b><br>较去年基数1016万<br><span style="color:#0ea5e9;font-weight:700">+134万（+13%）</span>',
+      ];
+      return `<div style="font-size:13px;line-height:1.8;max-width:260px">${tips[params[0].dataIndex]}</div>`;
+    }
+  },
+  grid: { left: 80, right: 60, top: 30, bottom: 80 },
+  xAxis: {
+    type: 'category',
+    data: categories,
+    axisLabel: { fontSize: 11, color: '#555', interval: 0, formatter: v => v },
+    axisTick: { show: false },
+    axisLine: { lineStyle: { color: '#e5e7eb' } },
+  },
+  yAxis: {
+    type: 'value',
+    max: 1900,
+    axisLabel: { formatter: v => v + '万', fontSize: 11, color: '#999' },
+    splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
+  },
+  series: [{
+    type: 'bar',
+    barWidth: 48,
+    data: [
+      // Each item: [startY, endY] for floating bar
+      { value: [0, 1496], itemStyle: { color: '#7c3aed' } },
+      { value: [1016, 1496], itemStyle: { color: '#f87171' } },
+      { value: [0, 1016], itemStyle: { color: '#7c3aed' } },
+      { value: [0, 1000], itemStyle: { color: '#7c3aed' } },
+      { value: [1000, 1500], itemStyle: { color: '#059669' } },
+      { value: [1500, 1650], itemStyle: { color: '#059669' } },
+      { value: [0, 1650], itemStyle: { color: '#7c3aed' } },
+      { value: [1150, 1650], itemStyle: { color: '#f87171' } },
+      { value: [0, 1150], itemStyle: { color: '#0ea5e9' } },
+    ],
+    itemStyle: {
+      borderRadius: [4, 4, 0, 0],
+    },
+    label: {
+      show: true,
+      position: 'top',
+      fontSize: 12,
+      fontWeight: 'bold',
+      formatter: function(p) {
+        const v = p.value; // [start, end]
+        if (!Array.isArray(v)) return v + '万';
+        const diff = v[1] - v[0];
+        if (v[0] === 0) return v[1] + '万';
+        return (diff > 0 ? '+' : '') + diff + '万';
+      },
+      color: function(p) {
+        const v = p.value;
+        if (!Array.isArray(v)) return '#333';
+        if (v[0] === 0) return '#333';
+        return (v[1] - v[0]) > 0 ? '#16a34a' : '#dc2626';
+      },
+    },
+    // ECharts 5.x supports [min, max] bar data natively
+  }],
+};
+
+// ECharts 5.x bar chart DOES support [min, max] data - it's called "floating bar"
+// The data item can be: number | [min, max] | { value: number | [min, max] }
+// This is supported in echarts 5.0+
+
+chart.setOption(option);
+window.addEventListener('resize', () => chart.resize());
+</script>
+</body>
+</html>
