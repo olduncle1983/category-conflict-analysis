@@ -53,7 +53,7 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
       <span class="tag tag-gray">25Q2 名义 1496万</span>
       = <span class="tag tag-red">招商转互选 480万</span> + <span class="tag tag-orange">流失客户 500万</span> + 其余 516万<br>
       <span class="tag tag-gray">26Q2 确认 1000万</span>
-      = <span class="tag tag-orange">500万流失</span>（虚线，同波客户）+ 其余 500万<br>
+      = <span class="tag tag-orange">500万流失</span>（虚线，同波客户）+ 其余 1000万<br>
       <span class="tag tag-green">未确认增量 +650万</span>：顺延至Q3 <span class="tag tag-blue">+500万</span> + 转双计 <span class="tag tag-green">+150万</span>
     </p>
     <p style="margin-top:10px;font-size:12px;color:#888;">
@@ -64,7 +64,7 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
   </div>
 
   <div class="conclusion">
-    ✅ <strong>核心判断</strong>：25Q2 与 26Q2 柱子中的 <span style="color:#d97706;font-weight:700">橙色段</span> 是同一波流失客户（500万），是 26Q2 需要重点追击的对象；
+    ✅ <strong>核心判断</strong>：25Q2 与 26Q2 柱子中的 <span style="color:#d97706;font-weight:700">橙色段（500万流失客户）</span> 是同一波客户，是 26Q2 需要重点追击的对象；
     虚线框部分（+650万）是已锁定但未在 Q2 确认的收入。
   </div>
 </div>
@@ -117,15 +117,10 @@ const option = {
     }
   },
   legend: {
-    data: [' ', '流失客户', '招商转互选', '顺延至Q3', '转双计'],
+    data: ['流失客户', '招商转互选', '顺延至Q3', '转双计'],
     bottom: 10,
     textStyle: { fontSize: 12, color: '#555' },
     itemWidth: 14, itemHeight: 14,
-    formatter: function(name) {
-      // ' ' 是紫色色块，显示色块但不显示文字
-      if (name === ' ') return ' ';
-      return name;
-    },
   },
   grid: { left: 80, right: 60, top: 40, bottom: 80 },
   xAxis: {
@@ -137,20 +132,30 @@ const option = {
   },
   yAxis: {
     type: 'value',
-    max: 1900,
+    max: 2300,
     axisLabel: { formatter: v => v + '万', fontSize: 11, color: '#999' },
     splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
   },
   series: [
-    // --- Stacked bars: 其余收入 (purple, no label, legend text hidden) ---
+    // --- Stacked bars: 其余收入 (purple, label only on 26Q2) ---
     {
       name: ' ',  // 空格：保留色块但图例不显示文字
       type: 'bar',
       stack: 'revenue',
       barWidth: 80,
-      data: [516, 500],  // 25Q2: 516, 26Q2: 500 (高度不同)
+      data: [516, 1000],  // 25Q2: 516, 26Q2: 1000
       itemStyle: { color: '#7c3aed', borderRadius: [0, 0, 0, 0] },
-      label: { show: false },  // 不显示数字
+      label: {
+        show: true,
+        position: 'inside',
+        formatter: function(p) {
+          // 25Q2: 不显示；26Q2: 显示 1000万
+          if (p.dataIndex === 0) return '';
+          if (p.dataIndex === 1 && p.value > 0) return '1000万';
+          return '';
+        },
+        fontSize: 13, fontWeight: 'bold', color: '#fff',
+      },
     },
     // --- 流失客户: 25Q2 实线 ---
     {
@@ -205,6 +210,18 @@ const option = {
     // For 26Q2: 其余=500, 流失=500, 招商转互选=0 → total=1000 ✓
     // For 25Q2: 其余=516, 流失=500, 招商转互选=480 → total=1496 ✓
 
+    // --- 柱子顶部总计标签 (散点系列，不占图例) ---
+    {
+      name: 'totalLabel',
+      type: 'scatter',
+      symbolSize: 0,  // 隐藏散点
+      data: [
+        { value: [0, 1496], label: { show: true, formatter: '1496万', position: 'top', fontSize: 13, fontWeight: 'bold', color: '#1e3a5f' } },
+        { value: [1, 1000], label: { show: true, formatter: '1000万', position: 'top', fontSize: 13, fontWeight: 'bold', color: '#1e3a5f' } },
+      ],
+      tooltip: { show: false },
+      legendHoverLink: false,
+    },
     // --- Unconfirmed增量: 顺延Q3 +500万 (stacked on top, dashed) ---
     {
       name: '顺延Q3确认（未确认）',
