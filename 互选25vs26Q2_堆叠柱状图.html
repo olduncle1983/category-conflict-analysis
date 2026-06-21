@@ -30,6 +30,7 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
 .tag-orange { background: #fef3c7; color: #d97706; }
 .tag-green { background: #dcfce7; color: #16a34a; }
 .tag-purple { background: #ede9fe; color: #7c3aed; }
+.tag-blue { background: #dbeafe; color: #2563eb; }
 .tag-gray { background: #f3f4f6; color: #6b7280; }
 .conclusion {
   margin-top: 20px; padding: 16px 20px;
@@ -50,15 +51,20 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
     <h3>📌 核心结论</h3>
     <p>
       <span class="tag tag-gray">25Q2 名义 1496万</span>
-      = <span class="tag tag-red">招商转互选 480万</span> + <span class="tag tag-orange">流失客户 500万</span> + <span class="tag tag-purple">其余 516万</span><br>
+      = <span class="tag tag-red">招商转互选 480万</span> + <span class="tag tag-orange">流失客户 500万</span> + 其余 516万<br>
       <span class="tag tag-gray">26Q2 确认 1000万</span>
-      = <span class="tag tag-orange">流失客户 500万</span>（同波）+ <span class="tag tag-purple">其余 500万</span><br>
-      <span class="tag tag-green">未确认增量 +650万</span>：顺延Q3 <span class="tag tag-green">+500万</span> + 双计 <span class="tag tag-green">+150万</span>
+      = <span class="tag tag-orange">500万流失</span>（虚线，同波客户）+ 其余 500万<br>
+      <span class="tag tag-green">未确认增量 +650万</span>：顺延至Q3 <span class="tag tag-blue">+500万</span> + 转双计 <span class="tag tag-green">+150万</span>
+    </p>
+    <p style="margin-top:10px;font-size:12px;color:#888;">
+      📌 25Q2流失客户：Swisse / 汤臣 / 水井坊 / 燕之屋 / 健康元<br>
+      📌 顺延至Q3：劲酒 / 费列罗 / 八马 / 国台<br>
+      📌 转双计：Manjie / 万益蓝 / GoodHealth
     </p>
   </div>
 
   <div class="conclusion">
-    ✅ <strong>核心判断</strong>：两端柱子中的 <span style="color:#d97706;font-weight:700">橙色段（500万流失客户）</span> 是同一波客户，是 26Q2 需要重点追击的对象；
+    ✅ <strong>核心判断</strong>：25Q2 与 26Q2 柱子中的 <span style="color:#d97706;font-weight:700">橙色段</span> 是同一波流失客户（500万），是 26Q2 需要重点追击的对象；
     虚线框部分（+650万）是已锁定但未在 Q2 确认的收入。
   </div>
 </div>
@@ -80,33 +86,46 @@ const chart = echarts.init(document.getElementById('chart'));
 // Since 25Q2 has 3 segments and 26Q2 has 2, we add an empty segment
 // to 26Q2 to align.
 
-const categories = ['25Q2\n（去年）', '26Q2\n（今年）'];
+const categories = ['25Q2', '26Q2'];
 
 const option = {
   tooltip: {
     trigger: 'axis',
     axisPointer: { type: 'shadow' },
     formatter: function(params) {
-      let html = `<div style="font-weight:700;margin-bottom:8px;">${params[0].name.replace('\n',' ')}</div>`;
+      const nameMap = {
+        ' ': '其余收入',
+        '流失客户': '流失客户',
+        '招商转互选': '招商转互选',
+        '顺延至Q3': '顺延至Q3',
+        '转双计': '转双计',
+      };
+      let html = `<div style="font-weight:700;margin-bottom:8px;">${params[0].name}</div>`;
       params.forEach(p => {
-        if (p.value > 0) {
-          html += `<div style="color:${p.color};">• ${p.seriesName}：${p.value}万</div>`;
+        if (p.value > 0 && p.seriesName !== ' ') {
+          const displayName = nameMap[p.seriesName] || p.seriesName;
+          html += `<div style="color:${p.color};">• ${displayName}：${p.value}万</div>`;
         }
       });
       // Add the "unconfirmed" note for 26Q2
       if (params[0].dataIndex === 1) {
-        html += `<div style="margin-top:6px;color:#2563eb;">+ 顺延Q3确认：+500万（未确认，蓝色虚线框）</div>`;
-        html += `<div style="color:#16a34a;">+ 双计部分：+150万（未确认，绿色虚线框）</div>`;
+        html += `<div style="margin-top:6px;color:#2563eb;">+ 顺延至Q3：+500万（蓝色虚线框）</div>`;
+        html += `<div style="color:#16a34a;">+ 转双计：+150万（绿色虚线框）</div>`;
         html += `<div style="margin-top:4px;font-weight:700;color:#1e3a5f;">实际商机规模：1650万</div>`;
       }
       return `<div style="font-size:13px;line-height:1.8;">${html}</div>`;
     }
   },
   legend: {
-    data: ['其余收入', '流失客户（未做好）', '招商转互选（一次性）', '顺延Q3确认（未确认）', '双计部分（未确认）'],
+    data: [' ', '流失客户', '招商转互选', '顺延至Q3', '转双计'],
     bottom: 10,
     textStyle: { fontSize: 12, color: '#555' },
     itemWidth: 14, itemHeight: 14,
+    formatter: function(name) {
+      // ' ' 是紫色色块，显示色块但不显示文字
+      if (name === ' ') return ' ';
+      return name;
+    },
   },
   grid: { left: 80, right: 60, top: 40, bottom: 80 },
   xAxis: {
@@ -123,26 +142,22 @@ const option = {
     splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
   },
   series: [
-    // --- Stacked bars for both 25Q2 and 26Q2 ---
-    // Stack order (bottom→top): 其余收入, 流失客户, 招商转互选
+    // --- Stacked bars: 其余收入 (purple, no label, legend text hidden) ---
     {
-      name: '其余收入',
+      name: ' ',  // 空格：保留色块但图例不显示文字
       type: 'bar',
       stack: 'revenue',
       barWidth: 80,
-      data: [516, 500],  // 25Q2: 516, 26Q2: 500
+      data: [516, 500],  // 25Q2: 516, 26Q2: 500 (高度不同)
       itemStyle: { color: '#7c3aed', borderRadius: [0, 0, 0, 0] },
-      label: {
-        show: true, position: 'inside',
-        formatter: function(p) { return p.value > 0 ? p.value + '万' : ''; },
-        fontSize: 12, fontWeight: 'bold', color: '#fff',
-      },
+      label: { show: false },  // 不显示数字
     },
+    // --- 流失客户: 25Q2 实线 ---
     {
-      name: '流失客户（未做好）',
+      name: '流失客户',
       type: 'bar',
       stack: 'revenue',
-      data: [500, 500],  // Same 500万 cohort in both years - same color, visually aligned
+      data: [500, 0],
       itemStyle: { color: '#f59e0b', borderRadius: [0, 0, 0, 0] },
       label: {
         show: true, position: 'inside',
@@ -150,11 +165,33 @@ const option = {
         fontSize: 12, fontWeight: 'bold', color: '#fff',
       },
     },
+    // --- 流失客户: 26Q2 虚线 (表示流失) ---
     {
-      name: '招商转互选（一次性）',
+      name: '流失客户',  // 同名→共用一个图例项
       type: 'bar',
       stack: 'revenue',
-      data: [480, 0],  // Only in 25Q2
+      data: [0, 500],
+      itemStyle: {
+        color: 'rgba(245,158,11,0.15)',   // 半透明橙色
+        borderColor: '#f59e0b',
+        borderWidth: 2,
+        borderType: [6, 4],  // 虚线
+        borderRadius: [0, 0, 0, 0],
+      },
+      label: {
+        show: true, position: 'inside',
+        formatter: function(p) {
+          return p.dataIndex === 1 && p.value > 0 ? '500万\n流失' : '';
+        },
+        fontSize: 11, fontWeight: 'bold', color: '#d97706', lineHeight: 16,
+      },
+    },
+    // --- 招商转互选 (red, only 25Q2) ---
+    {
+      name: '招商转互选',
+      type: 'bar',
+      stack: 'revenue',
+      data: [480, 0],
       itemStyle: { color: '#f87171', borderRadius: [4, 4, 0, 0] },
       label: {
         show: true, position: 'inside',
