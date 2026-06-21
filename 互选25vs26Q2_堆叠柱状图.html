@@ -133,8 +133,11 @@ const option = {
   yAxis: {
     type: 'value',
     max: 2300,
-    axisLabel: { formatter: v => v + '万', fontSize: 11, color: '#999' },
-    splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
+    show: false,  // 隐藏纵轴
+    axisLabel: { show: false },
+    axisLine: { show: false },
+    axisTick: { show: false },
+    splitLine: { show: false },
   },
   series: [
     // --- Stacked bars: 其余收入 (purple, no label) ---
