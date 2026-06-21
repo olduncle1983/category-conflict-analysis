@@ -137,7 +137,7 @@ const option = {
     splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
   },
   series: [
-    // --- Stacked bars: 其余收入 (purple, label only on 26Q2) ---
+    // --- Stacked bars: 其余收入 (purple, no label) ---
     {
       name: ' ',  // 空格：保留色块但图例不显示文字
       type: 'bar',
@@ -145,17 +145,7 @@ const option = {
       barWidth: 80,
       data: [516, 1000],  // 25Q2: 516, 26Q2: 1000
       itemStyle: { color: '#7c3aed', borderRadius: [0, 0, 0, 0] },
-      label: {
-        show: true,
-        position: 'inside',
-        formatter: function(p) {
-          // 25Q2: 不显示；26Q2: 显示 1000万
-          if (p.dataIndex === 0) return '';
-          if (p.dataIndex === 1 && p.value > 0) return '1000万';
-          return '';
-        },
-        fontSize: 13, fontWeight: 'bold', color: '#fff',
-      },
+      label: { show: false },  // 不显示任何数字
     },
     // --- 流失客户: 25Q2 实线 ---
     {
