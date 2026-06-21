@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互选 25Q2 vs 26Q2 收入拆解</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f5f7fa; padding: 32px 16px; display: flex; justify-content: center;
+}
+.container {
+  background: #fff; border-radius: 16px; padding: 36px 44px;
+  max-width: 900px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
+.subtitle { font-size: 13px; color: #888; margin-bottom: 4px; }
+.note { font-size: 12px; color: #aaa; margin-bottom: 20px; }
+#chart { width: 100%; height: 520px; }
+.legend-box {
+  margin-top: 24px; padding: 20px 24px;
+  background: #f8f9fc; border-radius: 12px; border-left: 4px solid #4a6cf7;
+}
+.legend-box h3 { font-size: 14px; color: #1a1a2e; margin-bottom: 10px; font-weight: 600; }
+.legend-box p { font-size: 13px; color: #555; line-height: 2.2; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin: 0 2px; }
+.tag-red { background: #fee2e2; color: #dc2626; }
+.tag-orange { background: #fef3c7; color: #d97706; }
+.tag-green { background: #dcfce7; color: #16a34a; }
+.tag-purple { background: #ede9fe; color: #7c3aed; }
+.tag-gray { background: #f3f4f6; color: #6b7280; }
+.conclusion {
+  margin-top: 20px; padding: 16px 20px;
+  background: linear-gradient(135deg, #eef2ff, #f0fdf4);
+  border-radius: 10px; font-size: 14px; color: #1e3a5f; line-height: 1.8;
+}
+.conclusion strong { color: #dc2626; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📊 视频号互选 25Q2 vs 26Q2 收入拆解</h1>
+  <div class="subtitle">堆叠柱状图 · 错进错出可视化</div>
+  <div class="note">单位：万元 · 悬浮查看明细 · 橙色=同波流失客户 虚线框=未确认增量</div>
+  <div id="chart"></div>
+
+  <div class="legend-box">
+    <h3>📌 核心结论</h3>
+    <p>
+      <span class="tag tag-gray">25Q2 名义 1496万</span>
+      = <span class="tag tag-red">招商转互选 480万</span> + <span class="tag tag-orange">流失客户 500万</span> + <span class="tag tag-purple">其余 516万</span><br>
+      <span class="tag tag-gray">26Q2 确认 1000万</span>
+      = <span class="tag tag-orange">流失客户 500万</span>（同波）+ <span class="tag tag-purple">其余 500万</span><br>
+      <span class="tag tag-green">未确认增量 +650万</span>：顺延Q3 <span class="tag tag-green">+500万</span> + 双计 <span class="tag tag-green">+150万</span>
+    </p>
+  </div>
+
+  <div class="conclusion">
+    ✅ <strong>核心判断</strong>：两端柱子中的 <span style="color:#d97706;font-weight:700">橙色段（500万流失客户）</span> 是同一波客户，是 26Q2 需要重点追击的对象；
+    虚线框部分（+650万）是已锁定但未在 Q2 确认的收入。
+  </div>
+</div>
+
+<script>
+const chart = echarts.init(document.getElementById('chart'));
+
+// ================================================================
+// DATA STRUCTURE
+// ================================================================
+// Bar 1: 25Q2 (total 1496)
+//   Segment (bottom→top): 其余516, 流失500, 招商转互选480
+// Bar 2: 26Q2 confirmed (total 1000)
+//   Segment (bottom→top): 其余500, 流失500
+//   + Dashed boxes above: +500 (顺延Q3), +150 (双计)
+//
+// For horizontal alignment of the "流失500万" segment,
+// we need the stacks to have the same bottom position for that segment.
+// Since 25Q2 has 3 segments and 26Q2 has 2, we add an empty segment
+// to 26Q2 to align.
+
+const categories = ['25Q2\n（去年）', '26Q2\n（今年）'];
+
+const option = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: { type: 'shadow' },
+    formatter: function(params) {
+      let html = `<div style="font-weight:700;margin-bottom:8px;">${params[0].name.replace('\n',' ')}</div>`;
+      params.forEach(p => {
+        if (p.value > 0) {
+          html += `<div style="color:${p.color};">• ${p.seriesName}：${p.value}万</div>`;
+        }
+      });
+      // Add the "unconfirmed" note for 26Q2
+      if (params[0].dataIndex === 1) {
+        html += `<div style="margin-top:6px;color:#16a34a;">+ 顺延Q3确认：+500万（未确认）</div>`;
+        html += `<div style="color:#16a34a;">+ 双计部分：+150万（未确认）</div>`;
+        html += `<div style="margin-top:4px;font-weight:700;color:#1e3a5f;">实际商机规模：1650万</div>`;
+      }
+      return `<div style="font-size:13px;line-height:1.8;">${html}</div>`;
+    }
+  },
+  legend: {
+    data: ['其余收入', '流失客户（未做好）', '招商转互选（一次性）', '顺延Q3确认（未确认）', '双计部分（未确认）'],
+    bottom: 10,
+    textStyle: { fontSize: 12, color: '#555' },
+    itemWidth: 14, itemHeight: 14,
+  },
+  grid: { left: 80, right: 60, top: 40, bottom: 80 },
+  xAxis: {
+    type: 'category',
+    data: categories,
+    axisLabel: { fontSize: 12, color: '#555', interval: 0 },
+    axisTick: { show: false },
+    axisLine: { lineStyle: { color: '#e5e7eb' } },
+  },
+  yAxis: {
+    type: 'value',
+    max: 1900,
+    axisLabel: { formatter: v => v + '万', fontSize: 11, color: '#999' },
+    splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
+  },
+  series: [
+    // --- Stacked bars for both 25Q2 and 26Q2 ---
+    // Stack order (bottom→top): 其余收入, 流失客户, 招商转互选
+    {
+      name: '其余收入',
+      type: 'bar',
+      stack: 'revenue',
+      barWidth: 80,
+      data: [516, 500],  // 25Q2: 516, 26Q2: 500
+      itemStyle: { color: '#7c3aed', borderRadius: [0, 0, 0, 0] },
+      label: {
+        show: true, position: 'inside',
+        formatter: function(p) { return p.value > 0 ? p.value + '万' : ''; },
+        fontSize: 12, fontWeight: 'bold', color: '#fff',
+      },
+    },
+    {
+      name: '流失客户（未做好）',
+      type: 'bar',
+      stack: 'revenue',
+      data: [500, 500],  // Same 500万 cohort in both years - same color, visually aligned
+      itemStyle: { color: '#f59e0b', borderRadius: [0, 0, 0, 0] },
+      label: {
+        show: true, position: 'inside',
+        formatter: function(p) { return p.value > 0 ? p.value + '万' : ''; },
+        fontSize: 12, fontWeight: 'bold', color: '#fff',
+      },
+    },
+    {
+      name: '招商转互选（一次性）',
+      type: 'bar',
+      stack: 'revenue',
+      data: [480, 0],  // Only in 25Q2
+      itemStyle: { color: '#f87171', borderRadius: [4, 4, 0, 0] },
+      label: {
+        show: true, position: 'inside',
+        formatter: function(p) { return p.value > 0 ? p.value + '万' : ''; },
+        fontSize: 12, fontWeight: 'bold', color: '#fff',
+      },
+    },
+    // --- 26Q2 confirmed stack (bar 1) ---
+    // We need to add the "其余收入" segment to 26Q2 bar as well
+    // Actually the above series already covers both bars.
+    // For 26Q2: 其余=500, 流失=500, 招商转互选=0 → total=1000 ✓
+    // For 25Q2: 其余=516, 流失=500, 招商转互选=480 → total=1496 ✓
+
+    // --- Unconfirmed增量: 顺延Q3 +500万 (stacked on top, dashed) ---
+    {
+      name: '顺延Q3确认（未确认）',
+      type: 'bar',
+      stack: 'revenue',  // Same stack → appears on top of confirmed bars
+      data: [0, 500],
+      itemStyle: {
+        color: 'rgba(52,211,153,0.12)',
+        borderColor: '#34d399',
+        borderWidth: 2,
+        borderType: [6, 4],  // dashed
+        borderRadius: [0, 0, 0, 0],
+      },
+      label: {
+        show: true, position: 'inside',
+        formatter: function(p) {
+          if (p.dataIndex === 1 && p.value > 0) return '+500万\n(Q3确认)';
+          return '';
+        },
+        fontSize: 11, fontWeight: 'bold', color: '#16a34a', lineHeight: 16,
+      },
+      tooltip: { show: true, formatter: function(p) { return p.seriesName + '：+' + p.value + '万（Q3入账）'; } },
+    },
+    // --- Unconfirmed增量: 双计 +150万 ---
+    {
+      name: '双计部分（未确认）',
+      type: 'bar',
+      stack: 'revenue',
+      data: [0, 150],
+      itemStyle: {
+        color: 'rgba(52,211,153,0.08)',
+        borderColor: '#34d399',
+        borderWidth: 2,
+        borderType: [6, 4],
+        borderRadius: [4, 4, 0, 0],
+      },
+      label: {
+        show: true, position: 'top',
+        formatter: function(p) {
+          if (p.dataIndex === 1 && p.value > 0) return '+150万\n(双计)';
+          return '';
+        },
+        fontSize: 11, fontWeight: 'bold', color: '#16a34a', lineHeight: 16,
+      },
+      tooltip: { show: true, formatter: function(p) { return p.seriesName + '：+' + p.value + '万（未体现在互选）'; } },
+    },
+  ],
+};
+
+chart.setOption(option);
+window.addEventListener('resize', () => chart.resize());
+</script>
+</body>
+</html>
