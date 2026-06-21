@@ -45,6 +45,9 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
   <h1>📊 视频号互选 25Q2 vs 26Q2 收入拆解</h1>
   <div class="subtitle">堆叠柱状图 · 错进错出可视化</div>
   <div class="note">单位：万元 · 悬浮查看明细 · 橙色=同波流失客户 虚线框=未确认增量</div>
+  <div style="text-align:right;margin-bottom:8px;">
+    <button onclick="downloadPNG()" style="padding:6px 16px;background:#4a6cf7;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;">📥 下载 PNG 图片</button>
+  </div>
   <div id="chart"></div>
 
   <div class="legend-box" style="border-left-color: #9ca3af;">
@@ -309,6 +312,19 @@ function updateBraces() {
 
 setTimeout(updateBraces, 50);
 window.addEventListener('resize', () => { chart.resize(); setTimeout(updateBraces, 50); });
+
+// 导出PNG图片
+function downloadPNG() {
+  const url = chart.getDataURL({
+    type: 'png',
+    pixelRatio: 2,  // 2倍分辨率，清晰
+    backgroundColor: '#fff'
+  });
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = '互选25vs26Q2_收入拆解.png';
+  link.click();
+}
 </script>
 </body>
 </html>
