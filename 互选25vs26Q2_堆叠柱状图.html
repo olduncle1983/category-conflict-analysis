@@ -200,18 +200,6 @@ const option = {
     // For 26Q2: 其余=500, 流失=500, 招商转互选=0 → total=1000 ✓
     // For 25Q2: 其余=516, 流失=500, 招商转互选=480 → total=1496 ✓
 
-    // --- 柱子顶部总计标签 (散点系列，不占图例) ---
-    {
-      name: 'totalLabel',
-      type: 'scatter',
-      symbolSize: 0,  // 隐藏散点
-      data: [
-        { value: [0, 1496], label: { show: true, formatter: '1496万', position: 'top', fontSize: 13, fontWeight: 'bold', color: '#1e3a5f' } },
-        { value: [1, 1000], label: { show: true, formatter: '1000万', position: 'top', fontSize: 13, fontWeight: 'bold', color: '#1e3a5f' } },
-      ],
-      tooltip: { show: false },
-      legendHoverLink: false,
-    },
     // --- Unconfirmed增量: 顺延Q3 +500万 (stacked on top, dashed) ---
     {
       name: '顺延Q3确认（未确认）',
@@ -259,10 +247,71 @@ const option = {
       tooltip: { show: true, formatter: function(p) { return p.seriesName + '：+' + p.value + '万（未体现在互选）'; } },
     },
   ],
+  graphic: [],
 };
 
 chart.setOption(option);
-window.addEventListener('resize', () => chart.resize());
+
+// 在柱子右侧画大括号 {} 并标注总计
+function updateBraces() {
+  const graphics = [];
+  [
+    { barIndex: 0, total: 1496, label: '1496万' },
+    { barIndex: 1, total: 1000, label: '1000万' },
+  ].forEach(({ barIndex, total, label }) => {
+    // 柱子顶部的像素坐标
+    const [xCenter, yTop] = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [barIndex, total]);
+    // 柱子底部的像素坐标
+    const [, yBottom] = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [barIndex, 0]);
+
+    const barRightX = xCenter + 40; // barWidth/2 = 40
+    const midY = (yTop + yBottom) / 2;
+
+    // 左侧大括号 {
+    graphics.push({
+      type: 'text',
+      position: [barRightX + 8, midY],
+      style: {
+        text: '{',
+        fontSize: Math.max(28, (yBottom - yTop) * 0.7),
+        color: '#1e3a5f',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        textBaseline: 'middle',
+      }
+    });
+    // 数字
+    graphics.push({
+      type: 'text',
+      position: [barRightX + 28, midY],
+      style: {
+        text: label,
+        fontSize: 13,
+        color: '#1e3a5f',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        textBaseline: 'middle',
+      }
+    });
+    // 右侧大括号 }
+    graphics.push({
+      type: 'text',
+      position: [barRightX + 50, midY],
+      style: {
+        text: '}',
+        fontSize: Math.max(28, (yBottom - yTop) * 0.7),
+        color: '#1e3a5f',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        textBaseline: 'middle',
+      }
+    });
+  });
+  chart.setOption({ graphic: graphics });
+}
+
+setTimeout(updateBraces, 50);
+window.addEventListener('resize', () => { chart.resize(); setTimeout(updateBraces, 50); });
 </script>
 </body>
 </html>
