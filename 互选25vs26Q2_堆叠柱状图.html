@@ -252,11 +252,12 @@ const option = {
 
 chart.setOption(option);
 
-// 在柱子右侧画右大括号 } 并标注总计
+// 在柱子右侧画瘦右大括号 } 并标注总计
+// 用线条+曲线画括号形状，线条粗细可自由控制（改 lw 即可）
 function updateBraces() {
   const graphics = [];
-  // barIndex, braceTop(顶部y), braceBottom(底部y), label
-  // 25Q2: 括号高度 = 整个柱子(1496)；26Q2: 括号高度 = 紫色部分(1000)
+  const lw = 1.2;  // ★ 括号线条粗细（px），改这里即可控制瘦/粗
+
   [
     { barIndex: 0, topVal: 1496, bottomVal: 0,    label: '1496万' },
     { barIndex: 1, topVal: 1000, bottomVal: 0,    label: '1000万' },
@@ -264,38 +265,48 @@ function updateBraces() {
     const [xCenter, yTop]    = chart.convertToPixel({ xAxisIndex:0, yAxisIndex:0 }, [barIndex, topVal]);
     const [xCenter2, yBottom] = chart.convertToPixel({ xAxisIndex:0, yAxisIndex:0 }, [barIndex, bottomVal]);
 
-    const braceX = xCenter + 48; // 柱子右侧偏移
-    const braceH  = yBottom - yTop;  // 括号高度
-    const midY   = (yTop + yBottom) / 2;
+    const bx   = xCenter + 50;  // 括号基准x（柱子右侧）
+    const bh   = yBottom - yTop; // 括号总高（像素）
+    const midY = (yTop + yBottom) / 2;
+    const w    = Math.max(5, bh * 0.07);  // 括号向右凸出的宽度
 
-    // 右大括号 } （用细线画：上横、弧、下横）
-    // 用 rect + bezierCurve 模拟，这里用 3 个 text 竖排模拟细括号
-    // 方案：用单个大字号的 } 字符，高度自适应
+    // ===== 右大括号 } 形状（用 2 条贝塞尔曲线模拟）=====
+    // 上弧：从( bx+w, yTop )到( bx+w, midY )，向右凸
+    const upH = midY - yTop;
     graphics.push({
-      type: 'text',
-      position: [braceX, midY],
-      style: {
-        text: '}',
-        fontSize: Math.max(10, braceH * 0.22),
-        color: '#1e3a5f',
-        fontWeight: 'normal',
-        textAlign: 'center',
-        textBaseline: 'middle',
-      }
+      type: 'bezierCurve',
+      position: [bx + w, yTop],
+      shape: {
+        x1: 0,      y1: 0,
+        cpx1: w * 1.8, cpy1: 0,
+        cpx2: w * 1.8, cpy2: upH,
+        x2: 0,      y2: upH,
+      },
+      style: { stroke: '#1e3a5f', lineWidth: lw, fill: 'transparent' }
     });
+    // 上横线（左→右）
+    graphics.push({ type:'line', position:[bx, yTop],    shape:{ x1:0,y1:0, x2:w,y2:0 },     style:{ stroke:'#1e3a5f', lineWidth:lw } });
+    // 下弧：从( bx+w, midY )到( bx+w, yBottom )，向右凸
+    const dnH = yBottom - midY;
+    graphics.push({
+      type: 'bezierCurve',
+      position: [bx + w, midY],
+      shape: {
+        x1: 0,      y1: 0,
+        cpx1: w * 1.8, cpy1: 0,
+        cpx2: w * 1.8, cpy2: dnH,
+        x2: 0,      y2: dnH,
+      },
+      style: { stroke: '#1e3a5f', lineWidth: lw, fill: 'transparent' }
+    });
+    // 下横线（左→右）
+    graphics.push({ type:'line', position:[bx, yBottom], shape:{ x1:0,y1:0, x2:w,y2:0 },     style:{ stroke:'#1e3a5f', lineWidth:lw } });
+
     // 数字（括号右侧）
-    graphics.push({
-      type: 'text',
-      position: [braceX + Math.max(10, braceH * 0.15), midY],
-      style: {
-        text: label,
-        fontSize: 13,
-        color: '#1e3a5f',
-        fontWeight: 'bold',
-        textAlign: 'left',
-        textBaseline: 'middle',
-      }
-    });
+    graphics.push({ type:'text', position:[bx + w + 6, midY], style:{
+      text: label, fontSize:13, color:'#1e3a5f', fontWeight:'bold',
+      textAlign:'left', textBaseline:'middle'
+    }});
   });
   chart.setOption({ graphic: graphics });
 }
