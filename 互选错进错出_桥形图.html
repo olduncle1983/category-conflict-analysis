@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>互选 Q2 错进错出分析</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -17,7 +17,63 @@ body {
 h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
 .subtitle { font-size: 13px; color: #888; margin-bottom: 4px; }
 .note { font-size: 12px; color: #aaa; margin-bottom: 20px; }
-#chart { width: 100%; height: 500px; }
+
+/* Chart grid */
+.chart-grid { width: 100%; }
+
+/* Y axis */
+.y-axis {
+  position: relative; height: 440px; width: 60px; float: left;
+}
+.y-tick {
+  position: absolute; right: 10px; transform: translateY(50%);
+  font-size: 11px; color: #999;
+}
+.y-line {
+  position: absolute; left: 58px; right: -1000px;
+  border-top: 1px dashed #eee;
+}
+
+/* Plot area */
+.plot-area {
+  position: relative; height: 440px; margin-left: 65px; margin-right: 40px;
+  border-left: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;
+}
+.bar-group {
+  position: absolute; bottom: 0; width: 64px; cursor: pointer;
+}
+.bar {
+  position: absolute; left: 0; right: 0; border-radius: 4px 4px 0 0;
+  transition: filter 0.15s;
+}
+.bar:hover { filter: brightness(1.1); }
+.bar-label {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.bar-label-above { top: -20px; color: #333; }
+.bar-label-inside { top: 8px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.x-label {
+  position: absolute; bottom: -48px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; color: #555; text-align: center; white-space: pre-line;
+  line-height: 1.4; width: 90px;
+}
+.connector {
+  position: absolute; height: 2px; background: #cbd5e1; top: 50%;
+}
+
+/* Tooltip */
+#tooltip {
+  display: none; position: fixed; z-index: 999;
+  background: #1e293b; color: #fff; border-radius: 8px;
+  padding: 10px 16px; font-size: 12px; line-height: 1.7;
+  pointer-events: none; max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+
+/* Clear float */
+.clear { clear: both; height: 60px; }
+
 .legend-box {
   margin-top: 24px; padding: 20px 24px;
   background: #f8f9fc; border-radius: 12px; border-left: 4px solid #4a6cf7;
@@ -41,8 +97,15 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
 <div class="container">
   <h1>📊 视频号互选 Q2 收入「错进错出」拆解</h1>
   <div class="subtitle">去年基数调整 vs 今年收入调整 · 可比口径还原</div>
-  <div class="note">单位：万元 · 悬浮柱状查看明细 · 紫色=基数 红色=扣除 绿色=加回 蓝色=最终结果</div>
-  <div id="chart"></div>
+  <div class="note">单位：万元 · 紫色=基数/确认值 · 红色=扣除项 · 绿色=加回项 · 蓝色=最终结果 · 悬浮柱状查看明细</div>
+
+  <div class="chart-grid">
+    <!-- Y-axis -->
+    <div class="y-axis" id="yAxis"></div>
+    <!-- Plot area (filled by JS) -->
+    <div class="plot-area" id="plotArea"></div>
+    <div class="clear"></div>
+  </div>
 
   <div class="legend-box">
     <h3>📌 关键结论</h3>
@@ -64,94 +127,129 @@ h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; font-weight: 700; }
   </div>
 </div>
 
-<script>
-const chart = echarts.init(document.getElementById('chart'));
+<div id="tooltip"></div>
 
-const categories = [
-  '去年Q2\n名义收入', '招商转互选\n(一次性)', '去年Q2\n可比基数',
-  '今年Q2\n确认收入', '顺延Q3\n确认', '双计\n部分', '今年Q2\n商机规模', '客户\n流失', '今年Q2\n可比规模'
+<script>
+// ========== DATA ==========
+// Each bar: from=starting Y (0 for standalone bars), to=ending Y
+const BARS = [
+  // Group 1: 去年
+  { label: "去年Q2\n名义收入",   from: 0,    to: 1496, color: "#7c3aed", tip: "去年Q2互选名义收入\n1496万" },
+  { label: "招商转互选\n(一次性)", from: 1496, to: 1016, color: "#f87171", tip: "招商转互选一次性扣除\n-480万\n（今年不再计入互选口径）" },
+  { label: "去年Q2\n可比基数",   from: 0,    to: 1016, color: "#a78bfa", tip: "去年可比基数\n（剔除一次性后）\n1016万" },
+  // Spacer
+  { label: "",               from: 0,    to: 0,    color: "transparent", tip: "" },
+  // Group 2: 今年
+  { label: "今年Q2\n确认收入",   from: 0,    to: 1000, color: "#7c3aed", tip: "今年Q2互选确认收入\n1000万" },
+  { label: "顺延Q3\n确认",      from: 1000, to: 1500, color: "#34d399", tip: "商机顺延至Q3确认\n+500万\n（Q3入账）" },
+  { label: "双计\n部分",        from: 1500, to: 1650, color: "#34d399", tip: "走双计未体现在互选\n+150万" },
+  { label: "今年Q2\n商机规模",   from: 0,    to: 1650, color: "#a78bfa", tip: "今年Q2实际商机规模\n1650万" },
+  { label: "客户\n流失",        from: 1650, to: 1150, color: "#f87171", tip: "真实客户流失\n-500万\n（需在Q3追击）" },
+  { label: "今年Q2\n可比规模",   from: 0,    to: 1150, color: "#0ea5e9", tip: "今年Q2可比规模\n1150万\n（较去年1016万 +134万 +13%）" },
 ];
 
-const option = {
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: { type: 'shadow' },
-    formatter: function(params) {
-      const tips = [
-        '<b>去年Q2名义收入</b><br>互选收入：1496万',
-        '<b>招商转互选（一次性）</b><br>去年含480万招商转互选<br>今年不再计入互选口径<br><span style="color:#dc2626;font-weight:700">-480万</span>',
-        '<b>去年Q2可比基数</b><br>剔除一次性后：1016万',
-        '<b>今年Q2确认收入</b><br>互选确认：1000万',
-        '<b>顺延Q3确认</b><br>商机已锁定，Q3入账<br><span style="color:#16a34a;font-weight:700">+500万</span>',
-        '<b>双计部分</b><br>走双计未体现在互选<br><span style="color:#16a34a;font-weight:700">+150万</span>',
-        '<b>今年Q2商机规模</b><br>加回后实际规模：1650万',
-        '<b>客户流失</b><br>真实流失，需Q3追击<br><span style="color:#dc2626;font-weight:700">-500万</span>',
-        '<b>今年Q2可比规模</b><br>较去年基数1016万<br><span style="color:#0ea5e9;font-weight:700">+134万（+13%）</span>',
-      ];
-      return `<div style="font-size:13px;line-height:1.8;max-width:260px">${tips[params[0].dataIndex]}</div>`;
+const MAX_VAL  = 1900;
+const PLOT_H   = 440;
+const BAR_W    = 56;
+const GAP      = 18;
+const plotArea = document.getElementById('plotArea');
+const tooltip  = document.getElementById('tooltip');
+
+// Y axis ticks
+const yAxis = document.getElementById('yAxis');
+[0, 400, 800, 1200, 1600, 1900].forEach(v => {
+  const pct = 1 - v / MAX_VAL;
+  const tick = document.createElement('div');
+  tick.className = 'y-tick';
+  tick.style.top = (pct * PLOT_H) + 'px';
+  tick.textContent = v + '万';
+  yAxis.appendChild(tick);
+
+  if (v > 0) {
+    const line = document.createElement('div');
+    line.className = 'y-line';
+    line.style.top = (pct * PLOT_H) + 'px';
+    yAxis.appendChild(line);
+  }
+});
+
+// Draw bars
+const totalBars = BARS.filter(b => b.to > 0 || b.from > 0).length;
+const spacerIdx = 3; // index of spacer
+const plotW = plotArea.clientWidth;
+const availW = plotW;
+const n = BARS.length;
+const gapW = (availW - n * BAR_W) / (n + 1);
+
+BARS.forEach((bar, i) => {
+  if (bar.color === 'transparent') {
+    // Spacer - just add gap, no bar
+    return;
+  }
+
+  const x = gapW + i * (BAR_W + gapW);
+  const grp = document.createElement('div');
+  grp.className = 'bar-group';
+  grp.style.left = x + 'px';
+
+  const fromY = PLOT_H * (1 - bar.from / MAX_VAL);
+  const toY   = PLOT_H * (1 - bar.to   / MAX_VAL);
+  const barTop = Math.min(fromY, toY);
+  const barH   = Math.abs(fromY - toY);
+
+  const div = document.createElement('div');
+  div.className = 'bar';
+  div.style.top    = barTop + 'px';
+  div.style.height  = Math.max(barH, 3) + 'px';
+  div.style.background = bar.color;
+  div.style.opacity   = bar.color === '#a78bfa' ? '0.7' : '1';
+
+  // Value label
+  const lbl = document.createElement('div');
+  lbl.className = 'bar-label';
+  const diff = bar.to - bar.from;
+  if (bar.from === 0) {
+    lbl.textContent = bar.to + '万';
+    lbl.className = 'bar-label bar-label-above';
+    if (barTop < 22) {
+      lbl.className = 'bar-label bar-label-inside';
+      lbl.style.top = '8px';
     }
-  },
-  grid: { left: 80, right: 60, top: 30, bottom: 80 },
-  xAxis: {
-    type: 'category',
-    data: categories,
-    axisLabel: { fontSize: 11, color: '#555', interval: 0, formatter: v => v },
-    axisTick: { show: false },
-    axisLine: { lineStyle: { color: '#e5e7eb' } },
-  },
-  yAxis: {
-    type: 'value',
-    max: 1900,
-    axisLabel: { formatter: v => v + '万', fontSize: 11, color: '#999' },
-    splitLine: { lineStyle: { color: '#f0f0f0', type: 'dashed' } },
-  },
-  series: [{
-    type: 'bar',
-    barWidth: 48,
-    data: [
-      // Each item: [startY, endY] for floating bar
-      { value: [0, 1496], itemStyle: { color: '#7c3aed' } },
-      { value: [1016, 1496], itemStyle: { color: '#f87171' } },
-      { value: [0, 1016], itemStyle: { color: '#7c3aed' } },
-      { value: [0, 1000], itemStyle: { color: '#7c3aed' } },
-      { value: [1000, 1500], itemStyle: { color: '#059669' } },
-      { value: [1500, 1650], itemStyle: { color: '#059669' } },
-      { value: [0, 1650], itemStyle: { color: '#7c3aed' } },
-      { value: [1150, 1650], itemStyle: { color: '#f87171' } },
-      { value: [0, 1150], itemStyle: { color: '#0ea5e9' } },
-    ],
-    itemStyle: {
-      borderRadius: [4, 4, 0, 0],
-    },
-    label: {
-      show: true,
-      position: 'top',
-      fontSize: 12,
-      fontWeight: 'bold',
-      formatter: function(p) {
-        const v = p.value; // [start, end]
-        if (!Array.isArray(v)) return v + '万';
-        const diff = v[1] - v[0];
-        if (v[0] === 0) return v[1] + '万';
-        return (diff > 0 ? '+' : '') + diff + '万';
-      },
-      color: function(p) {
-        const v = p.value;
-        if (!Array.isArray(v)) return '#333';
-        if (v[0] === 0) return '#333';
-        return (v[1] - v[0]) > 0 ? '#16a34a' : '#dc2626';
-      },
-    },
-    // ECharts 5.x supports [min, max] bar data natively
-  }],
-};
+  } else {
+    lbl.textContent = (diff > 0 ? '+' : '') + diff + '万';
+    lbl.className = 'bar-label bar-label-above';
+    lbl.style.color = diff > 0 ? '#16a34a' : '#dc2626';
+    if (barTop < 22) lbl.className = 'bar-label bar-label-inside';
+  }
+  div.appendChild(lbl);
 
-// ECharts 5.x bar chart DOES support [min, max] data - it's called "floating bar"
-// The data item can be: number | [min, max] | { value: number | [min, max] }
-// This is supported in echarts 5.0+
+  // Tooltip
+  if (bar.tip) {
+    div.addEventListener('mouseenter', e => {
+      tooltip.innerHTML = `<div style="font-weight:700;margin-bottom:6px;color:#93c5fd;">${bar.label.replace('\n',' ')}</div>${bar.tip.replace(/\n/g,'<br>')}`;
+      tooltip.style.display = 'block';
+    });
+    div.addEventListener('mousemove', e => {
+      tooltip.style.left = e.clientX + 14 + 'px';
+      tooltip.style.top  = e.clientY - 10 + 'px';
+    });
+    div.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+  }
 
-chart.setOption(option);
-window.addEventListener('resize', () => chart.resize());
+  grp.appendChild(div);
+
+  // X-axis label
+  const xl = document.createElement('div');
+  xl.className = 'x-label';
+  bar.label.split('\n').forEach(ln => {
+    const span = document.createElement('div');
+    span.textContent = ln;
+    xl.appendChild(span);
+  });
+  grp.appendChild(xl);
+
+  plotArea.appendChild(grp);
+});
 </script>
 </body>
 </html>
