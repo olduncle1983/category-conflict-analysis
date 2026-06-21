@@ -304,66 +304,6 @@ function updateBraces() {
       textAlign:'left', textBaseline:'middle'
     }});
   });
-  // ===== 箭头连线：左侧橙色区域 → 右侧橙色区域（同一批流失客户）=====
-  // 左侧流失500万区域中间：y = 516(其余) + 250 = 766
-  // 右侧流失500万区域中间：y = 1000(其余) + 250 = 1250
-  var lossMidY1 = 516 + 250;
-  var lossMidY2 = 1000 + 250;
-
-  var coords0 = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [0, lossMidY1]);
-  var coords1 = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [1, lossMidY2]);
-  if (coords0 && coords1) {
-    var x0 = coords0[0], y0 = coords0[1];
-    var x1 = coords1[0], y1 = coords1[1];
-    var barHalf = 40;  // barWidth=80 半宽
-    var startX = x0 + barHalf + 8;
-    var startY = y0;
-    var endX   = x1 - barHalf - 8;
-    var endY   = y1;
-
-    // 控制点：向上拱起
-    var cp1x = startX + (endX - startX) * 0.35;
-    var cp1y = startY - 50;
-    var cp2x = startX + (endX - startX) * 0.65;
-    var cp2y = endY - 50;
-
-    // 曲线
-    graphics.push({
-      type: 'bezierCurve',
-      position: [startX, startY],
-      shape: {
-        x1: 0, y1: 0,
-        cpx1: cp1x - startX, cpy1: cp1y - startY,
-        cpx2: cp2x - startX, cpy2: cp2y - startY,
-        x2: endX - startX, y2: endY - startY,
-      },
-      style: { stroke: '#d97706', lineWidth: 2, fill: 'transparent' }
-    });
-
-    // 箭头（终点三角形，指向右侧柱子）
-    graphics.push({
-      type: 'polygon',
-      position: [endX, endY],
-      shape: { points: [[0, -7], [12, 0], [0, 7]] },
-      style: { fill: '#d97706', stroke: 'none' }
-    });
-
-    // 文字标注（曲线顶部）
-    var txtX = (startX + endX) / 2;
-    var txtY = Math.min(cp1y, cp2y) - 14;
-    graphics.push({
-      type: 'text',
-      position: [txtX, txtY],
-      style: {
-        text: '同一批流失客户（500万）',
-        fontSize: 12, color: '#d97706', fontWeight: 'bold',
-        textAlign: 'center', textBaseline: 'bottom',
-        backgroundColor: 'rgba(255,255,255,0.9)',
-        padding: [3, 8], borderRadius: 4,
-      }
-    });
-  }
-
   chart.setOption({ graphic: graphics });
 }
 
